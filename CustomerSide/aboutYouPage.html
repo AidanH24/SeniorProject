@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Avon Gas & Service Form</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <div class="header">
+        <div class="logo">Logo</div>
+        <div class="title">Avon Gas & Service</div>
+    </div>
+
+    <div class="form-container">
+        <form id="aboutForm">
+            <label>First Name: *</label>
+            <input id="firstName" type="text" required>
+
+            <label>Last Name: *</label>
+            <input id="lastName" type="text" required>
+
+            <label>Phone Number: *</label>
+            <input id="phone" type="tel" required>
+
+            <label>Email: <span class="optional">(Optional)</span></label>
+            <input id="email" type="email">
+
+            <div class="btn-container">
+                <button type="submit" id="nextBtn">Next</button>
+            </div>
+        </form>
+    </div>
+
+    <script src="script-compiled.js"></script>
+</body>
+
+</html>
