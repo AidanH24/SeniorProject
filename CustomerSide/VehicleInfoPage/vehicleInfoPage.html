@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Avon Gas & Service Form</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <div class="header">
+        <div class="logo">Logo</div>
+        <div class="title">Avon Gas & Service</div>
+    </div>
+
+    <div class="form-container">
+        <form id="vehicleInfoForm">
+            <label>Make</label>
+            <select id="make" optional>
+                <option value="">Select Make</option>
+                <option value="Toyota">Toyota</option>
+                <option value="Honda">Honda</option>
+                <option value="Subaru">Subaru</option>
+                <option value="Hyundai">Hyundai</option>
+                <option value="Jeep">Jeep</option>
+                <option value="Nissan">Nissan</option>
+                <option value="Ford">Ford</option>
+                <option value="Chevrolet">Chevrolet</option>
+                <option value="Kia">Kia</option>
+                <option value="Volkswagen">Volkswagen</option>
+            </select>
+
+            <label>Type</label>
+            <select id="type" optaional>
+                <option value="">Select Type</option>
+                <option value="Sedan">Sedan</option>
+                <option value="Compact SUV">Compact SUV</option>
+                <option value="Full-Size SUV">Full-Size SUV</option>
+                <option value="Mid-Size SUV">Mid-Size SUV</option>
+                <option value="Light Duty Pickup Truck">Light Duty Pickup Truck</option>
+                <option value="Coupe">Coupe</option>
+                <option value="Hybrid">Hybrid</option>
+                <option value="Minivan">Minivan</option>
+                <option value="Hatchback">Hatchback</option>
+                <option value="Sports Car">Sports Car</option>
+                <option value="Electric Vehicle">Electric Vehicle</option> <!--popup for EV & Hybrid telling to call shop -->
+            </select>
+
+            <label>Color</label>
+            <select id="color" required>
+                <option value="">Select Color</option>
+                <option value="White">White</option>
+                <option value="Black">Black</option>
+                <option value="Silver">Silver</option>
+                <option value="Gray">Gray</option>
+                <option value="Red">Red</option>
+                <option value="Blue">Blue</option>
+                <option value="Brown">Brown</option>
+                <option value="Green">Green</option>
+                <option value="Yellow">Yellow</option>
+                <option value="Gold">Gold</option>
+            </select>
+
+            <label>Year</label>
+            <input id="Year" type="number" min="1900" optional>
+
+            <div class="btn-container">
+                <button type="submit" id="nextBtn">Next</button>
+            </div>
+        </form>
+    </div>
+
+    <script src="../script-compiled.js"></script>
+</body>
+
+</html>

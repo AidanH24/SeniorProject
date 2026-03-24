@@ -11,17 +11,41 @@ document.addEventListener('DOMContentLoaded', () => {
             const phone = (document.getElementById('phone') as HTMLInputElement).value;
             const email = (document.getElementById('email') as HTMLInputElement).value;
 
-            // Store temporarily in localStorage
-            const formData = {
+            // Store temporarily in sessionStorage
+            const userData = {
                 firstName,
                 lastName,
                 phone,
                 email
             };
-            localStorage.setItem('formData', JSON.stringify(formData));
+            sessionStorage.setItem('userData', JSON.stringify(userData));
 
             // Navigate to confirmation page
-            window.location.href = 'confirmationPage.html';
+            window.location.href = '/CustomerSide/VehicleInfoPage/vehicleInfoPage.html';
+        });
+    }
+    const vehicleInfoForm = document.getElementById('vehicleInfoForm') as HTMLFormElement;
+    if (vehicleInfoForm) {
+        vehicleInfoForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+
+            // Collect form data
+            const make = (document.getElementById('make') as HTMLSelectElement).value;
+            const type = (document.getElementById('type') as HTMLSelectElement).value;
+            const color = (document.getElementById('color') as HTMLSelectElement).value;
+            const year = (document.getElementById('Year') as HTMLInputElement).value;
+
+            // Store temporarily in sessionStorage
+            const vehicleData = {
+                make,
+                type,
+                color,
+                year
+            };
+            sessionStorage.setItem('vehicleData', JSON.stringify(vehicleData));
+
+            // Navigate to confirmation page
+            window.location.href = '/CustomerSide/ConfirmationPage/confirmationPage.html';
         });
     }
 });
