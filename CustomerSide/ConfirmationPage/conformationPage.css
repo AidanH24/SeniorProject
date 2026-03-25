@@ -46,6 +46,10 @@ body {
     margin-bottom: 15px;
 }
 
+.label {
+    font-style: italic;
+}
+
 .section {
     border-top: 3px solid #aaa;
     padding: 10px 0;
