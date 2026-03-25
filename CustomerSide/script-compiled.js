@@ -1,4 +1,4 @@
-// script.ts
+//script.ts
 document.addEventListener('DOMContentLoaded', function () {
     var form = document.getElementById('aboutForm');
     if (form) {
@@ -38,6 +38,22 @@ document.addEventListener('DOMContentLoaded', function () {
                 year: year
             };
             sessionStorage.setItem('vehicleData', JSON.stringify(vehicleData));
+            // Navigate to next page (if there is one, otherwise you can handle it as needed)
+            window.location.href = '/CustomerSide/ServicesPage/servicesPage.html';            
+        });
+    }
+    var servicesForm = document.getElementById('servicesForm');
+    if (servicesForm) {
+        servicesForm.addEventListener('submit', function (event) {
+            event.preventDefault();
+            // Collect selected services
+            var selectedServices = [];
+            var serviceCheckboxes = document.querySelectorAll('input[name="services"]:checked');
+            serviceCheckboxes.forEach(function (checkbox) {
+                selectedServices.push(checkbox.value);
+            });
+            // Store selected services in sessionStorage
+            sessionStorage.setItem('selectedServices', JSON.stringify(selectedServices));
             // Navigate to next page (if there is one, otherwise you can handle it as needed)
             window.location.href = '/CustomerSide/ConfirmationPage/confirmationPage.html';            
         });
