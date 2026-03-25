@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Appointment Calendar</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            height: 100vh;
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+        }
+
+        .left, .right {
+            padding: 20px;
+        }
+
+        .left {
+            width: 60%;
+        }
+
+        .right {
+            width: 40%;
+            border-left: 2px solid #ddd;
+        }
+
+        .month-title {
+            text-align: center;
+            font-size: 40px;
+            margin-bottom: 15px;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background: #f5f5f5;
+        }
+
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+        }
+
+        .day {
+            padding: 25px;
+            border: 1px solid #ccc;
+            text-align: center;
+            font-size: 25px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+            .day.selected {
+                background-color: #6fa8dc;
+                color: white;
+            }
+
+        .appointment {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 30px;
+        }
+
+        .unfinished {
+            background-color: #9fc5e8;
+        }
+
+        .finished {
+            background-color: #b07d2c;
+            color: white;
+        }
+
+        .details {
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 5px;
+            font-size: 20px;
+        }
+
+        button {
+            padding: 16px 24px;
+            margin-right: 12px;
+            border: none;
+            cursor: pointer;
+            border-radius: 6px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .btn-finish {
+            background-color: #b07d2c;
+            color: white;
+        }
+
+        .btn-reschedule {
+            background-color: #6fa8dc;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="left">
+            <div class="month-title" id="monthTitle"></div>
+            <div class="calendar" id="calendar"></div>
+        </div>
+
+        <div class="right">
+            <div id="appointments"></div>
+            <div class="details" id="details" style="display:none;"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            const calendarEl = document.getElementById('calendar');
+            const monthTitle = document.getElementById('monthTitle');
+            const appointmentsEl = document.getElementById('appointments');
+            const detailsEl = document.getElementById('details');
+
+            const now = new Date();
+            const currentMonthIndex = now.getMonth();
+            const currentYear = now.getFullYear();
+
+            const months = [
+                'January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'
+            ];
+
+            const data = {
+                10: [
+                    { time: '9:00 AM', customer: 'John Doe', phone: '555-123-4567', email: 'john@example.com', services: 'Oil Change', finished: false },
+                    { time: '10:00 AM', customer: 'Jane Smith', phone: '555-987-6543', email: 'jane@example.com', services: 'Tire Repair', finished: false },
+                    { time: '11:00 AM', customer: 'Robert Johnson', phone: '555-222-3333', email: 'robert@example.com', services: 'Inspection', finished: false }
+                ]
+            };
+
+            function getDaysInMonth(month, year) {
+                return new Date(year, month + 1, 0).getDate();
+            }
+
+            function renderCalendar() {
+                calendarEl.innerHTML = '';
+                monthTitle.textContent = months[currentMonthIndex] + ' ' + currentYear;
+
+                const days = getDaysInMonth(currentMonthIndex, currentYear);
+
+                for (let i = 1; i <= days; i++) {
+                    const day = document.createElement('div');
+                    day.className = 'day';
+                    day.textContent = i;
+
+                    day.onclick = () => selectDay(i, day);
+
+                    calendarEl.appendChild(day);
+                }
+            }
+
+            function selectDay(dayNum, el) {
+                document.querySelectorAll('.day').forEach(d => d.classList.remove('selected'));
+                el.classList.add('selected');
+                renderAppointments(dayNum);
+            }
+
+            function renderAppointments(dayNum) {
+                appointmentsEl.innerHTML = '';
+                detailsEl.style.display = 'none';
+
+                const appts = data[dayNum] || [];
+
+                appts.forEach((appt, index) => {
+                    const div = document.createElement('div');
+                    div.className = 'appointment ' + (appt.finished ? 'finished' : 'unfinished');
+                    div.textContent = `${appt.time} - ${appt.customer}`;
+
+                    div.onclick = () => showDetails(appt, dayNum, index);
+
+                    appointmentsEl.appendChild(div);
+                });
+            }
+
+            function showDetails(appt, dayNum, index) {
+                detailsEl.style.display = 'block';
+                detailsEl.innerHTML = `
+              <p><strong>Customer:</strong> ${appt.customer}</p>
+              <p><strong>Phone:</strong> ${appt.phone}</p>
+              <p><strong>Email:</strong> ${appt.email}</p>
+              <p><strong>Services:</strong> ${appt.services}</p>
+              <button class="btn-finish">Finished</button>
+              <button class="btn-reschedule">Reschedule</button>
+            `;
+
+                const finishBtn = detailsEl.querySelector('.btn-finish');
+
+                finishBtn.onclick = () => {
+                    // toggle finished state
+                    data[dayNum][index].finished = !data[dayNum][index].finished;
+                    renderAppointments(dayNum);
+
+                    // refresh details view with updated state
+                    showDetails(data[dayNum][index], dayNum, index);
+                };
+            }
+
+            renderCalendar();
+
+        });
+    </script>
+</body>
+</html>
