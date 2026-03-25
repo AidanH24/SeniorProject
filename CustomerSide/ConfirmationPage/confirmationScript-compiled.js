@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Retrieve data from sessionStorage
     var storedUserData = sessionStorage.getItem('userData');
     var storedVehicleData = sessionStorage.getItem('vehicleData');
+    var storedSelectedServices = sessionStorage.getItem('selectedServices');
 
     if (storedUserData) {
         var userData = JSON.parse(storedUserData);
@@ -38,6 +39,14 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         // Note: Other fields like vehicle, color, services, date, time are not yet collected
         // They can be added when more forms are implemented
+    }
+    if (storedSelectedServices) {
+        var selectedServices = JSON.parse(storedSelectedServices);
+        // Populate selected services on the confirmation page
+        var servicesElement = document.getElementById('services');
+        if (servicesElement) {
+            servicesElement.textContent = "Selected Services: ".concat(selectedServices.join(', '));
+        }
     }
 });
 // Define the finish function (though not asked, it's referenced in HTML)

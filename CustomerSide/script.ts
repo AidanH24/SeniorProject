@@ -48,4 +48,19 @@ document.addEventListener('DOMContentLoaded', () => {
             window.location.href = '/CustomerSide/ConfirmationPage/confirmationPage.html';
         });
     }
+    const servicesForm = document.getElementById('servicesForm') as HTMLFormElement | null;
+    if (servicesForm) {
+        servicesForm.addEventListener('submit', (event: Event) => {
+            event.preventDefault();
+
+            const checkboxes = document.querySelectorAll<HTMLInputElement>('input[name="services"]:checked');
+
+            const selectedServices = Array.from(checkboxes).map(cb => cb.value);
+
+            sessionStorage.setItem('selectedServices', JSON.stringify(selectedServices));
+
+            window.location.href = '/CustomerSide/ConfirmationPage/confirmationPage.html';
+        });
+    }
+
 });

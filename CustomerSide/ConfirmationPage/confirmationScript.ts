@@ -39,17 +39,22 @@ document.addEventListener('DOMContentLoaded', () => {
         if (vehicleYearElement) {
             vehicleYearElement.textContent = `Vehicle Year: ${vehicleData.year}`;
         }
-
-        // Note: Other fields like vehicle, color, services, date, time are not yet collected
-        // They can be added when more forms are implemented
+    }
+    const storedSelectedServices = sessionStorage.getItem('selectedServices');
+    if (storedSelectedServices) {
+        const selectedServices = JSON.parse(storedSelectedServices);
+        // Populate selected services on the confirmation page
+        const servicesElement = document.getElementById('services');
+        if (servicesElement) {
+            servicesElement.textContent = `Selected Services: ${selectedServices.join(', ')}`;
+        }
     }
 });
 
 // Define the finish function (though not asked, it's referenced in HTML)
 function finish() {
-    // For now, just clear the storage and go back or something
-    sessionStorage.removeItem('userData');
+    sessionStorage.removeItem('userData');//Would be submitted to datbase when implemented, but for now just clear it
     sessionStorage.removeItem('vehicleData');
-    alert('Form submitted successfully!');
-    // Perhaps redirect to home or something, but since not specified, just alert
+    sessionStorage.removeItem('selectedServices');
+    alert('Form submitted successfully!');   
 }
