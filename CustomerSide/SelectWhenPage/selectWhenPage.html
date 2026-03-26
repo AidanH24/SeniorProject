@@ -1,0 +1,42 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Select When</title>
+</head>
+
+<body>
+    <h1>Select Appointment Date and Time</h1>
+
+    <div class="form-container">
+        <form id="selectWhenForm">
+
+            <div class="field">
+                <label for="monthSelect">Month</label>
+                <select id="monthSelect" aria-label="Month"></select>
+            </div>
+
+            <div class="field">
+                <label for="daySelect">Day</label>
+                <select id="daySelect" aria-label="Day"></select>
+            </div>
+
+            <div class="field">
+                <label for="timeSelect">Time (15-minute increments, scrollable)</label>
+                <select id="timeSelect" size="10" aria-label="Time" style="width: 150px;"></select>
+            </div>
+
+            <div class="field">
+                <button type="submit" id="confirmBtn">Confirm Selection</button>
+            </div>
+        </form>
+    </div>
+    <div id="summary" role="status" aria-live="polite"></div>
+
+    <script src="selectWhenPage.js"></script>
+
+</body>
+
+</html>

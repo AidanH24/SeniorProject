@@ -1,19 +1,18 @@
+"use strict";
 // confirmationScript.ts
 document.addEventListener('DOMContentLoaded', () => {
     // Retrieve data from sessionStorage
-    const storedUserData = sessionStorage.getItem('userData'); 
+    const storedUserData = sessionStorage.getItem('userData');
     if (storedUserData) {
         const userData = JSON.parse(storedUserData);
-
         // Populate the user information on the confirmation page
         const nameElement = document.getElementById('name');
         if (nameElement) {
-            nameElement.textContent = `Name: ${userData.firstName} ${userData.lastName}`;
+            nameElement.textContent = `${userData.firstName} ${userData.lastName}`;
         }
-
         const phoneElement = document.getElementById('phone');
         if (phoneElement) {
-            phoneElement.textContent = `Phone: ${userData.phone}`;
+            phoneElement.textContent = `${userData.phone}`;
         }
     }
     const storedVehicleData = sessionStorage.getItem('vehicleData');
@@ -22,22 +21,19 @@ document.addEventListener('DOMContentLoaded', () => {
         // Populate vehicle information on the confirmation page
         const vehicleMakeElement = document.getElementById('vehicleMake');
         if (vehicleMakeElement) {
-            vehicleMakeElement.textContent = `Vehicle Make: ${vehicleData.make}`;
+            vehicleMakeElement.textContent = `${vehicleData.make}`;
         }
-
         const vehicleTypeElement = document.getElementById('vehicleType');
         if (vehicleTypeElement) {
-            vehicleTypeElement.textContent = `Vehicle Type: ${vehicleData.type}`;
+            vehicleTypeElement.textContent = `${vehicleData.type}`;
         }
-
         const vehicleColorElement = document.getElementById('vehicleColor');
         if (vehicleColorElement) {
-            vehicleColorElement.textContent = `Vehicle Color: ${vehicleData.color}`;
+            vehicleColorElement.textContent = `${vehicleData.color}`;
         }
-
         const vehicleYearElement = document.getElementById('vehicleYear');
         if (vehicleYearElement) {
-            vehicleYearElement.textContent = `Vehicle Year: ${vehicleData.year}`;
+            vehicleYearElement.textContent = `${vehicleData.year}`;
         }
     }
     const storedSelectedServices = sessionStorage.getItem('selectedServices');
@@ -46,15 +42,14 @@ document.addEventListener('DOMContentLoaded', () => {
         // Populate selected services on the confirmation page
         const servicesElement = document.getElementById('services');
         if (servicesElement) {
-            servicesElement.textContent = `Selected Services: ${selectedServices.join(', ')}`;
+            servicesElement.textContent = `${selectedServices.join(', ')}`;
         }
     }
 });
-
 // Define the finish function (though not asked, it's referenced in HTML)
 function finish() {
-    sessionStorage.removeItem('userData');//Would be submitted to datbase when implemented, but for now just clear it
+    sessionStorage.removeItem('userData'); //Would be submitted to datbase when implemented, but for now just clear it
     sessionStorage.removeItem('vehicleData');
     sessionStorage.removeItem('selectedServices');
-    alert('Form submitted successfully!');   
+    alert('Form submitted successfully!');
 }
