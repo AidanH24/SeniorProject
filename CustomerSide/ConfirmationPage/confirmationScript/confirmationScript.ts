@@ -49,6 +49,22 @@ document.addEventListener('DOMContentLoaded', () => {
             servicesElement.textContent = `${selectedServices.join(', ')}`;
         }
     }
+    const storedAppointmentData = sessionStorage.getItem('appointmentData');
+    if (storedAppointmentData) {
+        const appointmentData = JSON.parse(storedAppointmentData);
+        
+        // Populate appointment date on the confirmation page with day of week
+        const dateElement = document.getElementById('date');
+        if (dateElement) {
+            dateElement.textContent = `${appointmentData.dayOfWeek}, ${appointmentData.month} ${appointmentData.day}`;
+        }
+
+        // Populate appointment time on the confirmation page
+        const timeElement = document.getElementById('time');
+        if (timeElement) {
+            timeElement.textContent = `${appointmentData.time}`;
+        }
+    }
 });
 
 // Define the finish function (though not asked, it's referenced in HTML)
@@ -56,5 +72,6 @@ function finish() {
     sessionStorage.removeItem('userData');//Would be submitted to datbase when implemented, but for now just clear it
     sessionStorage.removeItem('vehicleData');
     sessionStorage.removeItem('selectedServices');
+    sessionStorage.removeItem('appointmentData');
     alert('Form submitted successfully!');   
 }

@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const checkboxes = document.querySelectorAll('input[name="services"]:checked');
             const selectedServices = Array.from(checkboxes).map(cb => cb.value);
             sessionStorage.setItem('selectedServices', JSON.stringify(selectedServices));
-            window.location.href = '/CustomerSide/ConfirmationPage/confirmationPage.html';
+            window.location.href = '/CustomerSide/selectWhenPage/selectWhenPage.html';
         });
     }
     const selectWhenForm = document.getElementById('selectWhenForm');

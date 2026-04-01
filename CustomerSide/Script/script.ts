@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             sessionStorage.setItem('selectedServices', JSON.stringify(selectedServices));
 
-            window.location.href = '/CustomerSide/ConfirmationPage/confirmationPage.html';
+            window.location.href = '/CustomerSide/selectWhenPage/selectWhenPage.html';
         });
     }
     const selectWhenForm = document.getElementById('selectWhenForm') as HTMLFormElement;
