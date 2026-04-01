@@ -56,6 +56,35 @@ function populateMonths() {
     updateDaysForMonth();
 }
 
+function saveDateTimeToSessionStorage() {
+    const selectedMonth = months[monthSelect.selectedIndex];
+    const selectedDay = daySelect.value;
+    const selectedTime = timeSelect.value;
+    const monthIndex = monthSelect.selectedIndex;
+    const year = new Date().getFullYear();
+    
+    // Create a Date object to calculate the day of week
+    const selectedDate = new Date(year, monthIndex, parseInt(selectedDay));
+    const dayOfWeek = selectedDate.toLocaleString('en-US', { weekday: 'long' });
+
+    const appointmentData = {
+        month: selectedMonth,
+        day: selectedDay,
+        dayOfWeek: dayOfWeek,
+        time: selectedTime
+    };
+
+    sessionStorage.setItem('appointmentData', JSON.stringify(appointmentData));
+}
+
+const confirmBtn = document.getElementById('confirmBtn') as HTMLButtonElement;
+confirmBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    saveDateTimeToSessionStorage();
+    // Navigate to confirmation page (update the path as needed)
+    window.location.href = '../ConfirmationPage/confirmationPage.html';
+});
+
 function initSelectWhenPage() {
     populateMonths();
     createTimeOptions();
