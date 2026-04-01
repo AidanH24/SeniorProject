@@ -20,5 +20,8 @@
   "homepage": "https://github.com/AidanH24/SeniorProject#readme",
   "dependencies": {
     "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.0"
   }
 }

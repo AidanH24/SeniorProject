@@ -1,19 +1,33 @@
+// excelWriter.ts
 import * as XLSX from "xlsx";
+import path from "path";
+import fs from "fs";
 
-// Load the workbook
-const workbook = XLSX.readFile("CustomerSide/AutoData.xlsx"); // adjust path as needed
+const EXCEL_PATH = path.join(__dirname, "../CustomerSide/AutoData.xlsx");
 
-// Get the first sheet
-const sheetName = workbook.SheetNames[0];
-const sheet = workbook.Sheets[sheetName];
+export function appendAppointment(rowData: any) {
+    console.log("📝 Writing to Excel:", rowData);
+    // Load workbook
+    const workbook = XLSX.readFile(EXCEL_PATH);
 
-// Write "Hello World" into cell A1
-sheet["A1"] = { t: "s", v: "Hello World" };
+    // Use first sheet
+    const sheetName = workbook.SheetNames[0];
+    const sheet = workbook.Sheets[sheetName];
 
-// Tell Excel the sheet range may have changed
-sheet["!ref"] = sheet["!ref"] || "A1";
+    // Convert sheet → JSON
+    const rows = XLSX.utils.sheet_to_json(sheet, { defval: "" });
 
-// Save the workbook back to disk
-XLSX.writeFile(workbook, "CustomerSide/AutoData.xlsx");
+    // Append new row
+    rows.push(rowData);
 
-console.log("Wrote 'Hello World' to A1");
+    // Convert JSON → sheet
+    const updatedSheet = XLSX.utils.json_to_sheet(rows);
+
+    // Replace sheet
+    workbook.Sheets[sheetName] = updatedSheet;
+
+    // Save workbook
+    XLSX.writeFile(workbook, EXCEL_PATH);
+
+    console.log("✔ Appointment saved to Excel");
+}
