@@ -33,9 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
             sessionStorage.setItem('userData', JSON.stringify(userData));
 
             // Navigate to confirmation page
-           // relative (from CustomerInfoPage to VehicleInfoPage)
-            window.location.href = '../VehicleInfoPage/vehicleInfoPage.html';
-
+            window.location.href = '/CustomerSide/VehicleInfoPage/vehicleInfoPage.html';
         });
     }
     const vehicleInfoForm = document.getElementById('vehicleInfoForm') as HTMLFormElement;
@@ -59,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
             sessionStorage.setItem('vehicleData', JSON.stringify(vehicleData));
 
             // Navigate to confirmation page
-            window.location.href = '../servicesPage/servicesPage.html';
+            window.location.href = '/CustomerSide/servicesPage/servicesPage.html';
         });
     }
     const servicesForm = document.getElementById('servicesForm') as HTMLFormElement | null;
@@ -73,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             sessionStorage.setItem('selectedServices', JSON.stringify(selectedServices));
 
-            window.location.href = '../ConfirmationPage/confirmationPage.html';
+            window.location.href = '/CustomerSide/selectWhenPage/selectWhenPage.html';
         });
     }
     const selectWhenForm = document.getElementById('selectWhenForm') as HTMLFormElement;
@@ -94,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 time: selectedTime
             };
             sessionStorage.setItem('appointmentData', JSON.stringify(appointmentData));
-            window.location.href = '../ConfirmationPage/confirmationPage.html';
+            window.location.href = '/CustomerSide/ConfirmationPage/confirmationPage.html';
         });
     }
     const phoneInput = document.getElementById('phone') as HTMLInputElement;
