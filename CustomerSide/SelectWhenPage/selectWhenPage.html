@@ -1,41 +1,47 @@
-﻿<!DOCTYPE html>
+﻿
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="selectWhenStyleSheet.css" />
     <title>Select When</title>
 </head>
 
 <body>
-    <h1>Select Appointment Date and Time</h1>
+    <div class="header">
+        <div class="logo">Logo</div>
+        <div class="title">Avon Gas & Service</div>
+    </div>
 
     <div class="form-container">
         <form id="selectWhenForm">
 
             <div class="field">
-                <label for="monthSelect">Month</label>
+                <label for="monthSelect">Month: </label>
                 <select id="monthSelect" aria-label="Month"></select>
             </div>
 
             <div class="field">
-                <label for="daySelect">Day</label>
+                <label for="daySelect">Day: </label>
                 <select id="daySelect" aria-label="Day"></select>
             </div>
 
             <div class="field">
-                <label for="timeSelect">Time (15-minute increments, scrollable)</label>
+                <label for="timeSelect">Time: </label>
                 <select id="timeSelect" size="10" aria-label="Time" style="width: 150px;"></select>
             </div>
 
-            <div class="field">
+            <div class="btn-container">
+                <button type="back" id="backBtn">Back</button>
                 <button type="submit" id="confirmBtn">Confirm Selection</button>
             </div>
         </form>
     </div>
     <div id="summary" role="status" aria-live="polite"></div>
 
-    <script src="selectWhenPage.js" src="../Script/script.js"></script> 
+    <script src="selectWhenPage.js" src ="../Script/script.js"></script>
 
 </body>
 
