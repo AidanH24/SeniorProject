@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "target": "ES2020",
+    "types": ["node"],
+    "lib": ["dom", "es2015"],
+    "outDir": "dist",
+    "rootDir": "src"
+  },
+  "exclude": ["*.js"]
+}

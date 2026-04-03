@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Avon Gas & Service Form</title>
+    <link rel="stylesheet" href="/public/css/servicesStyleSheet.css">
+</head>
+
+<body>
+
+    <div class="header">
+        <div class="logo">Logo</div>
+        <div class="title">Avon Gas & Service</div>
+    </div>
+
+    <div class="form-container">
+        <form id="servicesForm">
+            <label>Select all that apply:</label>
+            <br>
+
+            <label class="checkbox-item">
+                <input type="checkbox" id="insepctionSticker" name="services" value="Inspection Sticker">
+                Inspection Sticker
+            </label>
+            <br>
+            <label class="checkbox-item">
+                <input type="checkbox" id="generalAutoRepair" name="services" value="General Auto Repair">
+                General Auto Repair
+            </label>
+            <br>
+            <label class="checkbox-item">
+                <input type="checkbox" id="engineDiagnosis" name="services" value="Engine Diagnostic">
+                Engine Diagnostic
+            </label>
+            <br>
+            <label class="checkbox-item">
+                <input type="checkbox" id="engineRepair" name="services" value="Engine Repair">
+                Engine Repair
+            </label>
+            <br>
+            <label class="checkbox-item">
+                <input type="checkbox" id="transmissionService" name="services" value="Transmission Service">
+                Transmission Service
+            </label>
+            <br>
+            <label class="checkbox-item">
+                <input type="checkbox" id="brakeRepair" name="services" value="Brake Repair">
+                Brake Repair
+            </label>
+            <br>
+            <label class="checkbox-item">
+                <input type="checkbox" id="suspensionAndSteeringRepair" name="services"value="Suspension and Steering Repair">
+                Suspension and Steering Repair
+            </label>
+            <br>
+            <label class="checkbox-item">
+                <input type="checkbox" id="electricalSystemRepair" name="services" value="Electrical System Repair">
+                Electrical System Repair
+            </label>
+            <br>
+            <label class="checkbox-item">
+                <input type="checkbox" id="oilChange" name="services" value="Oil Change">
+                Oil Change
+            </label>
+            <br>
+            <label class="checkbox-item">
+                <input type="checkbox" id="tireService" name="services" value="Tire Service">
+                Tire Service
+            </label>
+            <br>
+            <label class="checkbox-item">
+                <input type="checkbox" id="exhaustRepair" name="services" value="Exhaust Repair">
+                Exhaust Repair
+            </label>
+            <br>
+            <label class="checkbox-item">
+                <input type="checkbox" id="coolingSystemService" name="services" value="Cooling System Service">
+                Cooling System Service
+            </label>
+            <br>
+            <label class="checkbox-item">
+                <input type="checkbox" id="preventiveMaintenanceServices" name="services"value="Preventive Maintenance Services">
+                Preventive Maintenance Services
+            </label>
+            <br>
+
+            <label>Other:</label>
+            <textarea id="comments" rows="4" placeholder="Enter any additional information or specific requests here..."></textarea>
+
+            <div class="btn-container">
+                <button type="back" id="backBtn">Vehicle Information</button>
+                <button type="submit" id="nextBtn">Select When</button>
+            </div>
+
+        </form>
+    </div>
+
+    <script src="/dist/script.js"></script>
+</body>
+
+</html>
