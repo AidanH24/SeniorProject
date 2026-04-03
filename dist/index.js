@@ -14,7 +14,7 @@ app.use(express_1.default.urlencoded({ extended: true }));
 app.use(express_1.default.static(path_1.default.join(__dirname, '../public')));
 // Main page
 app.get('/', (req, res) => {
-    res.sendFile(path_1.default.join(__dirname, '../public/aboutyou.html'));
+    res.sendFile(path_1.default.join(__dirname, '../public/aboutYouPage.html'));
 });
 // Endpoint to add appointment data to Excel (database)
 app.post('/api/appointments', (req, res) => {

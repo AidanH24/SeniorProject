@@ -13,7 +13,7 @@ app.use(express.static(path.join(__dirname, '../public')));
 
 // Main page
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/aboutyou.html'));
+  res.sendFile(path.join(__dirname, '../public/aboutYouPage.html'));
 });
 
 // Endpoint to add appointment data to Excel (database)
