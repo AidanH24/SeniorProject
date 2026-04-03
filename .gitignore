@@ -1,0 +1,43 @@
+# Node dependencies
+node_modules/
+
+# Build output
+dist/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Logs
+logs/
+*.log
+yarn-debug.log*
+npm-debug.log*
+pnpm-debug.log*
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+
+# Environment variables
+.env
+
+# Excel and local data files (if not intentionally tracked)
+CustomerSide/AutoData.xlsx
+
+# Railway local settings
+.railway/
+
+# Misc
+*.bak
+*.tmp
+*.swp
