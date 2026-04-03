@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
             sessionStorage.setItem('userData', JSON.stringify(userData));
 
             // Navigate to confirmation page
-            window.location.href = '/CustomerSide/VehicleInfoPage/vehicleInfoPage.html';
+            window.location.href = '/vehicleInfoPage.html';
         });
     }
     const vehicleInfoForm = document.getElementById('vehicleInfoForm') as HTMLFormElement;
@@ -57,12 +57,12 @@ document.addEventListener('DOMContentLoaded', () => {
             sessionStorage.setItem('vehicleData', JSON.stringify(vehicleData));
 
             // Navigate to services page
-            window.location.href = '/CustomerSide/ServicesPage/servicesPage.html';
+            window.location.href = '/servicesPage.html';
         });
         const backBtn = document.getElementById('backBtn') as HTMLButtonElement;
         backBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            window.location.href = '/CustomerSide/aboutPage/aboutPage.html';
+            window.location.href = '/aboutPage.html';
         });
     }
     const servicesForm = document.getElementById('servicesForm') as HTMLFormElement | null;
@@ -76,13 +76,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
             sessionStorage.setItem('selectedServices', JSON.stringify(selectedServices));
 
-            window.location.href = '/CustomerSide/selectWhenPage/selectWhenPage.html';
+            window.location.href = '/selectWhenPage.html';
         });
         const backBtn = document.getElementById('backBtn') as HTMLButtonElement;
         backBtn.addEventListener('click', (e) => {
             e.preventDefault();
             // Navigate back to vehicle info page
-            window.location.href = '/CustomerSide/VehicleInfoPage/vehicleInfoPage.html';
+            window.location.href = '/vehicleInfoPage.html';
         }
         );
     }

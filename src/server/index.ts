@@ -1,6 +1,6 @@
 import express from 'express';
 import path from 'path';
-import { appendAppointment } from './dbConnect';
+import { appendAppointment } from '../dbConnect';
 
 const app = express();
 const PORT = Number(process.env.PORT || 3000);
