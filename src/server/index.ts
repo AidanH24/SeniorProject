@@ -9,11 +9,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Serve public files (CSS, frontend JS, images)
-app.use(express.static(path.join(__dirname, '../public')));
+app.use(express.static(path.join(__dirname, '../../public')));
 
 // Main page
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/aboutYouPage.html'));
+  res.sendFile(path.join(__dirname, '../../public/aboutYouPage.html'));
 });
 
 // Endpoint to add appointment data to Excel (database)
@@ -43,11 +43,11 @@ function isAuthenticated(req: any, res: any, next: any) {
 }
 
 app.get('/garage', isAuthenticated, (req, res) => {
-  res.sendFile(path.join(__dirname, '../protectedPages/GarageSide/GarageCalender.html'));
+  res.sendFile(path.join(__dirname, '../../protectedPages/GarageSide/GarageCalendar.html'));
 });
 
 app.get('/reschedule', isAuthenticated, (req, res) => {
-  res.sendFile(path.join(__dirname, '../protectedPages/GarageSide/reschedulePage.html'));
+  res.sendFile(path.join(__dirname, '../../protectedPages/GarageSide/reschedulePage.html'));
 });
 
 app.listen(PORT, () => {
