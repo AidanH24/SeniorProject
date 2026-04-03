@@ -84,6 +84,12 @@ confirmBtn.addEventListener('click', (e) => {
     // Navigate to confirmation page (update the path as needed)
     window.location.href = '../ConfirmationPage/confirmationPage.html';
 });
+const backBtn = document.getElementById('backBtn') as HTMLButtonElement;
+backBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    // Navigate back to services page (update the path as needed)
+    window.location.href = '../ServicesPage/servicesPage.html';
+});
 
 function initSelectWhenPage() {
     populateMonths();

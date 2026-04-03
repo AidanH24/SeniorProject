@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const phone = document.getElementById('phone').value;
             const emailInput = document.getElementById('email');
             const email = emailInput.value;
-            if (!isValidEmail(email)) {
+            if (email && !isValidEmail(email)) {
                 emailInput.focus();
                 alert('Please enter a valid email address.');
                 return;
@@ -48,8 +48,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 year
             };
             sessionStorage.setItem('vehicleData', JSON.stringify(vehicleData));
-            // Navigate to confirmation page
-            window.location.href = '/CustomerSide/servicesPage/servicesPage.html';
+            // Navigate to services page
+            window.location.href = '/CustomerSide/ServicesPage/servicesPage.html';
+        });
+        const backBtn = document.getElementById('backBtn');
+        backBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.location.href = '/CustomerSide/aboutPage/aboutPage.html';
         });
     }
     const servicesForm = document.getElementById('servicesForm');
@@ -61,25 +66,11 @@ document.addEventListener('DOMContentLoaded', () => {
             sessionStorage.setItem('selectedServices', JSON.stringify(selectedServices));
             window.location.href = '/CustomerSide/selectWhenPage/selectWhenPage.html';
         });
-    }
-    const selectWhenForm = document.getElementById('selectWhenForm');
-    if (selectWhenForm) {
-        selectWhenForm.addEventListener('submit', (event) => {
-            event.preventDefault();
-            const selectedMonth = document.getElementById('monthSelect').value;
-            const selectedDay = document.getElementById('daySelect').value;
-            const selectedTime = document.getElementById('timeSelect').value;
-            if (!selectedTime) {
-                alert('Please select a time slot from the list.');
-                return;
-            }
-            const appointmentData = {
-                month: selectedMonth,
-                day: selectedDay,
-                time: selectedTime
-            };
-            sessionStorage.setItem('appointmentData', JSON.stringify(appointmentData));
-            window.location.href = '/CustomerSide/ConfirmationPage/confirmationPage.html';
+        const backBtn = document.getElementById('backBtn');
+        backBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            // Navigate back to vehicle info page
+            window.location.href = '/CustomerSide/VehicleInfoPage/vehicleInfoPage.html';
         });
     }
     const phoneInput = document.getElementById('phone');
