@@ -1,16 +1,16 @@
 "use strict";
-const monthSelect = document.getElementById('monthSelect');
-const daySelect = document.getElementById('daySelect');
-const timeSelect = document.getElementById('timeSelect');
-const summary = document.getElementById('summary');
-const months = [
+const rescheduleMonthSelect = document.getElementById('monthSelect');
+const rescheduleDaySelect = document.getElementById('daySelect');
+const rescheduleTimeSelect = document.getElementById('timeSelect');
+const rescheduleSummary = document.getElementById('summary');
+const rescheduleMonths = [
     'January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December'
 ];
-function createTimeOptions() {
+function rescheduleTimeOptions() {
     const startHour = 8;
     const endHour = 16;
-    timeSelect.innerHTML = '';
+    rescheduleTimeSelect.innerHTML = '';
     for (let hour = startHour; hour <= endHour; hour++) {
         for (let minute = 0; minute < 60; minute += 15) {
             if (hour === endHour && minute > 45)
@@ -22,39 +22,39 @@ function createTimeOptions() {
             const option = document.createElement('option');
             option.value = label;
             option.textContent = label;
-            timeSelect.appendChild(option);
+            rescheduleTimeSelect.appendChild(option);
         }
     }
 }
-function updateDaysForMonth() {
-    const monthIndex = monthSelect.selectedIndex;
+function updateRescheduleDaysForMonth() {
+    const monthIndex = rescheduleMonthSelect.selectedIndex;
     const now = new Date();
     const year = now.getFullYear();
     const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
-    daySelect.innerHTML = '';
+    rescheduleDaySelect.innerHTML = '';
     for (let d = 1; d <= daysInMonth; d++) {
         const option = document.createElement('option');
         option.value = String(d);
         option.textContent = String(d);
-        daySelect.appendChild(option);
+        rescheduleDaySelect.appendChild(option);
     }
 }
-function populateMonths() {
-    monthSelect.innerHTML = '';
-    months.forEach((m, index) => {
+function populateRescheduleMonths() {
+    rescheduleMonthSelect.innerHTML = '';
+    rescheduleMonths.forEach((m, index) => {
         const option = document.createElement('option');
         option.value = String(index);
         option.textContent = m;
-        monthSelect.appendChild(option);
+        rescheduleMonthSelect.appendChild(option);
     });
-    monthSelect.selectedIndex = new Date().getMonth();
-    updateDaysForMonth();
+    rescheduleMonthSelect.selectedIndex = new Date().getMonth();
+    updateRescheduleDaysForMonth();
 }
-function saveDateTimeToSessionStorage() {
-    const selectedMonth = months[monthSelect.selectedIndex];
-    const selectedDay = daySelect.value;
-    const selectedTime = timeSelect.value;
-    const monthIndex = monthSelect.selectedIndex;
+function saveRescheduleDateTimeToSessionStorage() {
+    const selectedMonth = rescheduleMonths[rescheduleMonthSelect.selectedIndex];
+    const selectedDay = rescheduleDaySelect.value;
+    const selectedTime = rescheduleTimeSelect.value;
+    const monthIndex = rescheduleMonthSelect.selectedIndex;
     const year = new Date().getFullYear();
     // Create a Date object to calculate the day of week
     const selectedDate = new Date(year, monthIndex, parseInt(selectedDay));
@@ -67,22 +67,16 @@ function saveDateTimeToSessionStorage() {
     };
     sessionStorage.setItem('appointmentData', JSON.stringify(appointmentData));
 }
-const confirmBtn = document.getElementById('confirmBtn');
-confirmBtn.addEventListener('click', (e) => {
+const confirmRescheduleBtn = document.getElementById('confirmBtn');
+confirmRescheduleBtn.addEventListener('click', (e) => {
     e.preventDefault();
-    saveDateTimeToSessionStorage();
+    saveRescheduleDateTimeToSessionStorage();
     // Navigate to confirmation page (update the path as needed)
     window.location.href = '../ConfirmationPage/confirmationPage.html';
 });
-const backBtn = document.getElementById('backBtn');
-backBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    // Navigate back to services page (update the path as needed)
-    window.location.href = '../ServicesPage/servicesPage.html';
-});
-function initSelectWhenPage() {
-    populateMonths();
-    createTimeOptions();
-    monthSelect.addEventListener('change', updateDaysForMonth);
+function initReschedulePage() {
+    populateRescheduleMonths();
+    rescheduleTimeOptions();
+    rescheduleMonthSelect.addEventListener('change', updateRescheduleDaysForMonth);
 }
-initSelectWhenPage();
+initReschedulePage();

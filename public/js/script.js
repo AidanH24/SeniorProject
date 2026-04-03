@@ -1,6 +1,5 @@
 "use strict";
 // script.ts
-Object.defineProperty(exports, "__esModule", { value: true });
 function isValidEmail(email) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }

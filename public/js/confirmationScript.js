@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 // confirmationScript.ts
 document.addEventListener('DOMContentLoaded', () => {
     // Retrieve data from sessionStorage
