@@ -72,13 +72,13 @@ confirmBtn.addEventListener('click', (e) => {
     e.preventDefault();
     saveDateTimeToSessionStorage();
     // Navigate to confirmation page (update the path as needed)
-    window.location.href = '../ConfirmationPage/confirmationPage.html';
+    window.location.href = '/confirmationPage.html';
 });
 const backBtn = document.getElementById('backBtn');
 backBtn.addEventListener('click', (e) => {
     e.preventDefault();
     // Navigate back to services page (update the path as needed)
-    window.location.href = '../ServicesPage/servicesPage.html';
+    window.location.href = '/servicesPage.html';
 });
 function initSelectWhenPage() {
     populateMonths();

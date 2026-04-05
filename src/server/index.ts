@@ -50,6 +50,7 @@ app.get('/reschedule', isAuthenticated, (req, res) => {
   res.sendFile(path.join(__dirname, '../../protectedPages/GarageSide/reschedulePage.html'));
 });
 
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });

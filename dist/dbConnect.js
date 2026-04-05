@@ -42,7 +42,7 @@ const XLSX = __importStar(require("xlsx"));
 const path_1 = __importDefault(require("path"));
 const EXCEL_PATH = path_1.default.join(__dirname, "../CustomerSide/AutoData.xlsx");
 function appendAppointment(rowData) {
-    console.log("📝 Writing to Excel:", rowData);
+    console.log("Writing to Excel:", rowData);
     // Load workbook
     const workbook = XLSX.readFile(EXCEL_PATH);
     // Use first sheet
@@ -58,5 +58,5 @@ function appendAppointment(rowData) {
     workbook.Sheets[sheetName] = updatedSheet;
     // Save workbook
     XLSX.writeFile(workbook, EXCEL_PATH);
-    console.log("✔ Appointment saved to Excel");
+    console.log("Appointment saved to Excel");
 }
