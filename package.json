@@ -7,12 +7,10 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:server": "tsc --project tsconfig.server.json",
     "build:client": "tsc --project tsconfig.client.json",
-    "build": "npm run build:server && npm run build:client",
+    "build": "tsc",
     "start": "node dist/server/index.js",
     "dev:excel-api": "ts-node-dev --respawn src/excelApi/index.ts",
-    "start:excel-api": "node dist/excelApi/index.js",
-    "build": "tsc"
-
+    "start:excel-api": "node dist/excelApi/index.js"
   },
   "repository": {
     "type": "git",
@@ -35,7 +33,7 @@
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
-    "@types/node": "^25.5.0",
+    "@types/node": "^25.5.2",
     "ts-node-dev": "^2.0.0",
     "typescript": "^6.0.2"
   }
