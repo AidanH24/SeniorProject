@@ -40,8 +40,9 @@
         </div>
 
         <div class="button-row">
-            <button onclick="finish()">OK</button>
-            <button onclick="window.print()">Print</button>
+            <!-- changed: use id instead of inline onclick -->
+            <button id="finishBtn" type="button">OK</button>
+            <button type="button" onclick="window.print()">Print</button>
         </div>
 
     </div>
