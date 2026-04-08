@@ -4,11 +4,18 @@ const octokit = new Octokit({ auth: process.env.GH_TOKEN });
 
 export async function getFileContent(owner: string, repo: string, path: string, ref?: string) {
   const res = await octokit.repos.getContent({ owner, repo, path, ref });
-  // @ts-ignore
-  const file = Array.isArray(res.data) ? res.data[0] : res.data;
-  if (!("content" in file)) throw new Error("Unexpected content response");
-  const buffer = Buffer.from(file.content, "base64");
-  return { buffer, sha: file.sha, encoding: file.encoding };
+  // res.data can be an array for directories; expect a file
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const file: any = Array.isArray(res.data) ? res.data[0] : res.data;
+
+  if (!file || typeof file.content !== "string") {
+    throw new Error(`File content not found for ${owner}/${repo}/${path} (ref=${ref})`);
+  }
+
+  // Explicitly treat content as string so Buffer.from's overloads match
+  const contentBase64 = file.content as string;
+  const buffer = Buffer.from(contentBase64, "base64");
+  return { buffer, sha: file.sha as string };
 }
 
 export async function updateFileContent(
