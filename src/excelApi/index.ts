@@ -1,43 +1,52 @@
-import express from "express";
-import { z } from "zod";
-import { readWorkbookFromRepo, writeWorkbookToRepo } from "./excelService.js";
+// src/excelApi/index.ts
+import express from 'express';
+import { appendAppointment } from './excelWriter';
 
-const app = express();
-app.use(express.json());
+const router = express.Router();
 
-const payloadSchema = z.object({
-  sheetName: z.string().optional(),
-  row: z.number().int().min(1),
-  values: z.record(z.string(), z.union([z.string(), z.number(), z.boolean(), z.null()]))
-});
+function validateAndNormalize(payload: any) {
+  const required = ['FirstName', 'LastName', 'AppointmentDate', 'Time', 'ServiceType'];
+  for (const k of required) {
+    if (!payload?.[k] || String(payload[k]).trim() === '') {
+      throw new Error(`Missing required field: ${k}`);
+    }
+  }
 
-app.post("/api/update-row", async (req, res) => {
-  const parsed = payloadSchema.safeParse(req.body);
-  if (!parsed.success) return res.status(400).json({ error: parsed.error.format() });
-
-  const { sheetName, row, values } = parsed.data;
+  const normalized: Record<string, any> = {
+    FirstName: String(payload.FirstName).trim(),
+    LastName: String(payload.LastName).trim(),
+    Phone: payload.Phone ? String(payload.Phone).trim() : '',
+    Email: payload.Email ? String(payload.Email).trim() : '',
+    CarMake: payload.CarMake ? String(payload.CarMake).trim() : '',
+    CarType: payload.CarType ? String(payload.CarType).trim() : '',
+    CarColor: payload.CarColor ? String(payload.CarColor).trim() : '',
+    CarYear: payload.CarYear ? Number(payload.CarYear) : '',
+    ServiceType: String(payload.ServiceType).trim(),
+    AppointmentDate: String(payload.AppointmentDate).trim(),
+    Time: String(payload.Time).trim(),
+  };
 
   try {
-    const { workbook, sha } = await readWorkbookFromRepo();
+    const iso = new Date(`${normalized.AppointmentDate} ${normalized.Time}`);
+    if (!isNaN(iso.getTime())) normalized.AppointmentISO = iso.toISOString();
+  } catch (e) {}
 
-    const ws = sheetName ? workbook.getWorksheet(sheetName) ?? workbook.addWorksheet(sheetName) : (workbook.worksheets[0] ?? workbook.addWorksheet("Sheet1"));
-    const targetRow = ws.getRow(row);
+  return normalized;
+}
 
-    for (const [col, val] of Object.entries(values)) {
-      targetRow.getCell(col).value = val as any;
-    }
-    targetRow.commit();
+router.use(express.json());
+router.use(express.urlencoded({ extended: true }));
 
-    const commit = await writeWorkbookToRepo(workbook, sha, `Update row ${row} via API`);
-    return res.json({ ok: true, commit });
+router.post('/appointments', async (req, res) => {
+  try {
+    const payload = validateAndNormalize(req.body);
+    await appendAppointment(payload);
+    return res.status(201).json({ message: 'Appointment saved' });
   } catch (err: any) {
-    if (err.message === "SHA_MISMATCH") {
-      return res.status(409).json({ error: "File changed upstream. Please retry." });
-    }
-    console.error(err);
-    return res.status(500).json({ error: "internal_error", detail: err.message });
+    console.error('Error writing to Excel:', err);
+    const status = err.message && err.message.startsWith('Missing') ? 400 : 500;
+    return res.status(status).json({ message: err.message || 'Failed to save appointment' });
   }
 });
 
-const port = Number(process.env.APP_PORT || 3000);
-app.listen(port, () => console.log(`Excel API listening on ${port}`));
+export default router;
