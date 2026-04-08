@@ -21,13 +21,29 @@ document.addEventListener('DOMContentLoaded', () => {
     function getDaysInMonth(month, year) {
         return new Date(year, month + 1, 0).getDate();
     }
+    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     function renderCalendar() {
         calendarEl.innerHTML = '';
         monthTitle.textContent = months[currentMonthIndex] + ' ' + currentYear;
+        for (let d = 0; d < dayNames.length; d++) {
+            const header = document.createElement('div');
+            header.className = 'day-header';
+            header.textContent = dayNames[d];
+            calendarEl.appendChild(header);
+        }
         const days = getDaysInMonth(currentMonthIndex, currentYear);
+        const firstDay = new Date(currentYear, currentMonthIndex, 1).getDay();
+        for (let blank = 0; blank < firstDay; blank++) {
+            const empty = document.createElement('div');
+            calendarEl.appendChild(empty);
+        }
+        const today = now.getDate();
         for (let i = 1; i <= days; i++) {
             const day = document.createElement('div');
             day.className = 'day';
+            if (i === today) {
+                day.classList.add('today');
+            }
             day.textContent = String(i);
             day.onclick = () => selectDay(i, day);
             calendarEl.appendChild(day);

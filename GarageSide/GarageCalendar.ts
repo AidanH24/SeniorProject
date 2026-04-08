@@ -38,15 +38,35 @@ document.addEventListener('DOMContentLoaded', (): void => {
     return new Date(year, month + 1, 0).getDate();
   }
 
+  const dayNames: string[] = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
   function renderCalendar(): void {
     calendarEl.innerHTML = '';
     monthTitle.textContent = months[currentMonthIndex] + ' ' + currentYear;
 
+    for (let d = 0; d < dayNames.length; d++) {
+      const header: HTMLDivElement = document.createElement('div');
+      header.className = 'day-header';
+      header.textContent = dayNames[d];
+      calendarEl.appendChild(header);
+    }
+
     const days: number = getDaysInMonth(currentMonthIndex, currentYear);
+    const firstDay: number = new Date(currentYear, currentMonthIndex, 1).getDay();
+
+    for (let blank = 0; blank < firstDay; blank++) {
+      const empty: HTMLDivElement = document.createElement('div');
+      calendarEl.appendChild(empty);
+    }
+
+    const today: number = now.getDate();
 
     for (let i = 1; i <= days; i++) {
       const day: HTMLDivElement = document.createElement('div');
       day.className = 'day';
+      if (i === today) {
+        day.classList.add('today');
+      }
       day.textContent = String(i);
 
       day.onclick = (): void => selectDay(i, day);
