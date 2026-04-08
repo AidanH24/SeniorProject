@@ -75,84 +75,132 @@ document.addEventListener("DOMContentLoaded", () => {
  * clears sessionStorage on success, and shows user feedback.
  */
 async function finish() {
-  // Helper to read display inputs or fallback to sessionStorage
-  const getText = (id) => {
-    const el = document.getElementById(id);
-    if (!el) return "";
-    if ("value" in el) return (el.value || "").trim();
-    return (el.textContent || "").trim();
-  };
-
-  // Try to read structured session data as fallback
-  const user = (() => {
-    try { return JSON.parse(sessionStorage.getItem("userData") || "{}"); } catch { return {}; }
-  })();
-  const vehicle = (() => {
-    try { return JSON.parse(sessionStorage.getItem("vehicleData") || "{}"); } catch { return {}; }
-  })();
-  const appointment = (() => {
-    try { return JSON.parse(sessionStorage.getItem("appointmentData") || "{}"); } catch { return {}; }
-  })();
-  const servicesArr = (() => {
-    try { return JSON.parse(sessionStorage.getItem("selectedServices") || "[]"); } catch { return []; }
-  })();
-
-  const payload = {
-    FirstName: getText("FirstName") || user.firstName || "",
-    LastName: getText("LastName") || user.lastName || "",
-    Phone: getText("Phone") || user.phone || "",
-    Email: getText("Email") || user.email || "",
-    CarMake: getText("CarMake") || vehicle.make || "",
-    CarType: getText("CarType") || vehicle.type || "",
-    CarColor: getText("CarColor") || vehicle.color || "",
-    CarYear: (() => {
-      const v = getText("CarYear") || vehicle.year || "";
-      const n = Number(v);
-      return Number.isFinite(n) && v !== "" ? n : "";
-    })(),
-    ServiceType: getText("ServiceType") || (Array.isArray(servicesArr) ? servicesArr.join(", ") : ""),
-    AppointmentDate: getText("AppointmentDate") || appointment.date || appointment.appointmentDate || "",
-    Time: getText("Time") || appointment.time || ""
-  };
-
-  // Basic client-side validation
-  const required = ["FirstName", "LastName", "AppointmentDate", "Time", "ServiceType"];
-  for (const k of required) {
-    if (!payload[k] || String(payload[k]).trim() === "") {
-      alert(`Please fill the required field ${k}`);
-      return;
+    // Helper to read display inputs or fallback to sessionStorage
+    const getText = (id) => {
+      const el = document.getElementById(id);
+      if (!el) return "";
+      if ("value" in el) return (el.value || "").trim();
+      return (el.textContent || "").trim();
+    };
+  
+    // Try to read structured session data as fallback
+    const user = (() => {
+      try { return JSON.parse(sessionStorage.getItem("userData") || "{}"); } catch { return {}; }
+    })();
+    const vehicle = (() => {
+      try { return JSON.parse(sessionStorage.getItem("vehicleData") || "{}"); } catch { return {}; }
+    })();
+    const appointment = (() => {
+      try { return JSON.parse(sessionStorage.getItem("appointmentData") || "{}"); } catch { return {}; }
+    })();
+    const servicesArr = (() => {
+      try { return JSON.parse(sessionStorage.getItem("selectedServices") || "[]"); } catch { return []; }
+    })();
+  
+    // --- Build AppointmentDate and Time robustly from appointmentData ---
+    let appointmentDateStr = "";
+    let appointmentTimeStr = "";
+  
+    // Prefer explicit fields if present
+    if (appointment.appointmentDate) {
+      appointmentDateStr = String(appointment.appointmentDate).trim();
+    } else if (appointment.date) {
+      appointmentDateStr = String(appointment.date).trim();
+    } else if (appointment.month && appointment.day) {
+      // Try to convert month name or number to YYYY-MM-DD
+      const monthNames = {
+        january:1, february:2, march:3, april:4, may:5, june:6,
+        july:7, august:8, september:9, october:10, november:11, december:12
+      };
+      const m = String(appointment.month).trim();
+      let monthNum = NaN;
+      if (/^\d+$/.test(m)) monthNum = Number(m);
+      else {
+        const key = m.toLowerCase();
+        if (monthNames[key]) monthNum = monthNames[key];
+      }
+      const year = appointment.year ? Number(appointment.year) : new Date().getFullYear();
+      if (!Number.isNaN(monthNum)) {
+        const mm = String(monthNum).padStart(2, "0");
+        const dd = String(appointment.day).padStart(2, "0");
+        appointmentDateStr = `${year}-${mm}-${dd}`; // YYYY-MM-DD
+      } else {
+        // fallback to readable string if parsing fails
+        appointmentDateStr = `${appointment.dayOfWeek ? appointment.dayOfWeek + ", " : ""}${appointment.month} ${appointment.day}`;
+      }
     }
-  }
-
-  try {
-    console.log("Submitting appointment payload", payload);
-    const res = await fetch("/api/appointments", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-
-    const body = await res.json().catch(() => ({}));
-    if (res.ok) {
-      console.log("Appointment saved", body);
-      // Clear session storage only after success
-      sessionStorage.removeItem("userData");
-      sessionStorage.removeItem("vehicleData");
-      sessionStorage.removeItem("selectedServices");
-      sessionStorage.removeItem("appointmentData");
-
-      alert("Form submitted successfully!");
-      // optional: redirect to a thank-you page
-      // window.location.href = "/thank-you.html";
+  
+    // Time: prefer explicit time field, otherwise try DOM
+    if (appointment.time) {
+      appointmentTimeStr = String(appointment.time).trim();
     } else {
-      console.error("Server returned error", res.status, body);
-      alert("Failed to save appointment. Please try again.");
+      appointmentTimeStr = getText("Time") || "";
     }
-  } catch (err) {
-    console.error("Network or JS error", err);
-    alert("Network error. Please check your connection and try again.");
+  
+    // --- Build payload using the computed date/time ---
+    const payload = {
+      FirstName: getText("FirstName") || user.firstName || "",
+      LastName: getText("LastName") || user.lastName || "",
+      Phone: getText("Phone") || user.phone || "",
+      Email: getText("Email") || user.email || "",
+      CarMake: getText("CarMake") || vehicle.make || "",
+      CarType: getText("CarType") || vehicle.type || "",
+      CarColor: getText("CarColor") || vehicle.color || "",
+      CarYear: (() => {
+        const v = getText("CarYear") || vehicle.year || "";
+        const n = Number(v);
+        return Number.isFinite(n) && v !== "" ? n : "";
+      })(),
+      ServiceType: getText("ServiceType") || (Array.isArray(servicesArr) ? servicesArr.join(", ") : ""),
+      AppointmentDate: appointmentDateStr,
+      Time: appointmentTimeStr
+    };
+  
+    // Optional: add AppointmentISO if both date and time are parseable
+    if (appointmentDateStr && appointmentTimeStr) {
+      const parsed = new Date(`${appointmentDateStr} ${appointmentTimeStr}`);
+      if (!isNaN(parsed.getTime())) payload.AppointmentISO = parsed.toISOString();
+    }
+  
+    // Basic client-side validation
+    const required = ["FirstName", "LastName", "AppointmentDate", "Time", "ServiceType"];
+    for (const k of required) {
+      if (!payload[k] || String(payload[k]).trim() === "") {
+        alert(`Please fill the required field ${k}`);
+        return;
+      }
+    }
+  
+    try {
+      console.log("Submitting appointment payload", payload);
+      const res = await fetch("/api/appointments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+  
+      const body = await res.json().catch(() => ({}));
+      if (res.ok) {
+        console.log("Appointment saved", body);
+        // Clear session storage only after success
+        sessionStorage.removeItem("userData");
+        sessionStorage.removeItem("vehicleData");
+        sessionStorage.removeItem("selectedServices");
+        sessionStorage.removeItem("appointmentData");
+  
+        alert("Form submitted successfully!");
+        // optional: redirect to a thank-you page
+        // window.location.href = "/thank-you.html";
+      } else {
+        console.error("Server returned error", res.status, body);
+        alert("Failed to save appointment. Please try again.");
+      }
+    } catch (err) {
+      console.error("Network or JS error", err);
+      alert("Network error. Please check your connection and try again.");
+    }
   }
-}
+  
 
 // Expose for compatibility with any remaining inline handlers
 window.finish = finish;
