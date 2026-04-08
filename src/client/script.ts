@@ -7,6 +7,7 @@ function isValidEmail(email: string): boolean {
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('aboutForm') as HTMLFormElement;
     if (form) {
+          //if firstName is the correct password send user to garage page without validating email or phone. Get correct password from excel database
         form.addEventListener('submit', (event) => {
             event.preventDefault();
 
@@ -16,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const phone = (document.getElementById('phone') as HTMLInputElement).value;
             const emailInput = document.getElementById('email') as HTMLInputElement;
             const email = emailInput.value;
-
+          
             if (email && !isValidEmail(email)) {
                 emailInput.focus();
                 alert('Please enter a valid email address.');
