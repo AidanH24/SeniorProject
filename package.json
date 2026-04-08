@@ -8,7 +8,7 @@
     "build:server": "tsc --project tsconfig.server.json",
     "build:client": "tsc --project tsconfig.client.json",
     "build": "tsc",
-    "start": "node dist/server/index.js",
+    "start": "node dist/excelApi/index.js",
     "dev:excel-api": "ts-node-dev --respawn src/excelApi/index.ts",
     "start:excel-api": "node dist/excelApi/index.js"
   },
