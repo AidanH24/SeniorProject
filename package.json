@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:server": "tsc --project tsconfig.server.json",
     "build:client": "tsc --project tsconfig.client.json",
-    "start": "node dist/excelApi/index.js",
+    "start": "npm run build && node ./scripts/check-dist.js && node dist/excelApi/index.js",
     "build": "tsc -p tsconfig.json",
     "postinstall": "npm run build",
     "check-dist": "node ./scripts/check-dist.js",
