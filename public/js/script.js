@@ -1,6 +1,5 @@
 "use strict";
 // script.ts
-alert("ADMIN FIX — SCRIPT UPDATED");
 function isValidEmail(email) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
@@ -14,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
             //  ADMIN SHORTCUT — MUST RUN FIRST
             if (firstName.toLowerCase() === "admin") {
                 sessionStorage.setItem("adminMode", "true");
-                window.location.href = "/protectedPages/GarageSide/GarageCalendar.html";
+                window.location.href = "/GarageCalendar.html";
                 return;
             }
             // Normal user flow
