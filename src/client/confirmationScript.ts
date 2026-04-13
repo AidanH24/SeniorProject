@@ -65,6 +65,8 @@ document.addEventListener('DOMContentLoaded', () => {
             timeElement.textContent = `${appointmentData.time}`;
         }
     }
+    const finishBtn = document.getElementById("finishBtn");
+    if (finishBtn) finishBtn.addEventListener("click", finish);
 });
 
 // Define the finish function (though not asked, it's referenced in HTML)
@@ -75,3 +77,5 @@ function finish() {
     sessionStorage.removeItem('appointmentData');
     alert('Form submitted successfully!');   
 }
+// @ts-ignore
+window.finish = finish;
