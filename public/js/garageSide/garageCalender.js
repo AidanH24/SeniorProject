@@ -4,6 +4,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const monthTitle = document.getElementById('monthTitle');
     const appointmentsEl = document.getElementById('appointments');
     const detailsEl = document.getElementById('details');
+    const downloadBtn = document.getElementById("downloadExcelBtn");
+    if (downloadBtn) {
+        downloadBtn.addEventListener("click", () => {
+            window.location.href = "/api/download-excel";
+        });
+    }
     const now = new Date();
     const currentMonthIndex = now.getMonth();
     const currentYear = now.getFullYear();

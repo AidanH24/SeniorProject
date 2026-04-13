@@ -33,6 +33,18 @@ app.get('/reschedule', isAuthenticated, (req, res) => {
   res.sendFile(path.join(__dirname, '../../protectedPages/GarageSide/reschedulePage.html'));
 });
 
+app.get("/api/download-excel", (req, res) => {
+  const filePath = path.join(__dirname, "../../Data/AutoData.xlsx");
+
+  res.download(filePath, "AutoData.xlsx", (err) => {
+    if (err) {
+      console.error("Error sending Excel file:", err);
+      res.status(500).send("Error downloading file");
+    }
+  });
+});
+
+
 console.log('=== STARTUP DIAGNOSTIC ===');
 console.log('cwd:', process.cwd());
 console.log('node:', process.version);
