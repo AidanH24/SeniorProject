@@ -119,7 +119,7 @@ async function finish() {
     }
 
     const payload: Record<string, any> = {
-        FirstName: getText("name") || user.firstName || "",
+        FirstName: user.firstName || "",
         LastName: user.lastName || "",
         Phone: getText("phone") || user.phone || "",
         Email: user.email || "",

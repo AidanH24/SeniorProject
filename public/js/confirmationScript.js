@@ -132,7 +132,7 @@ async function finish() {
         appointmentTimeStr = getText("time") || "";
     }
     const payload = {
-        FirstName: getText("name") || user.firstName || "",
+        FirstName: user.firstName || "",
         LastName: user.lastName || "",
         Phone: getText("phone") || user.phone || "",
         Email: user.email || "",
