@@ -5,47 +5,47 @@ function isValidEmail(email: string): boolean {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+
     const form = document.getElementById('aboutForm') as HTMLFormElement;
     if (form) {
-          //if firstName is the correct password send user to garage page without validating email or phone. Get correct password from excel database
         form.addEventListener('submit', (event) => {
             event.preventDefault();
 
-            // Collect form data
-            const firstName = (document.getElementById('firstName') as HTMLInputElement).value;
+            const firstNameInput = document.getElementById('firstName') as HTMLInputElement;
+            const firstName = firstNameInput.value.trim();
+
+            //  ADMIN SHORTCUT — MUST RUN FIRST
+            if (firstName.toLowerCase() === "admin") {
+                sessionStorage.setItem("adminMode", "true");
+                window.location.href = "/protectedPages/GarageSide/GarageCalendar.html";
+                return;
+            }
+
+            // Normal user flow
             const lastName = (document.getElementById('lastName') as HTMLInputElement).value;
             const phone = (document.getElementById('phone') as HTMLInputElement).value;
             const emailInput = document.getElementById('email') as HTMLInputElement;
             const email = emailInput.value;
 
-            if (firstName.toLowerCase() === "admin") {
-                // Optional: mark admin mode for the backend
-                sessionStorage.setItem("adminMode", "true");
-
-                // Redirect directly to the garage calendar admin page
-                window.location.href = "/protectedPages/GarageSide/GarageCalendar.html";
-                return;
-            }
-          
             if (email && !isValidEmail(email)) {
                 emailInput.focus();
                 alert('Please enter a valid email address.');
                 return;
             }
-            
-            // Store temporarily in sessionStorage
+
             const userData = {
                 firstName,
                 lastName,
                 phone,
                 email
             };
-            sessionStorage.setItem('userData', JSON.stringify(userData));
 
-            // Navigate to confirmation page
+            sessionStorage.setItem('userData', JSON.stringify(userData));
             window.location.href = '/vehicleInfoPage.html';
         });
     }
+
+
     const vehicleInfoForm = document.getElementById('vehicleInfoForm') as HTMLFormElement;
     if (vehicleInfoForm) {
         vehicleInfoForm.addEventListener('submit', (event) => {
