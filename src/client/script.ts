@@ -1,4 +1,5 @@
 // script.ts
+alert("ADMIN FIX — SCRIPT UPDATED");
 
 function isValidEmail(email: string): boolean {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);

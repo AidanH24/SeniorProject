@@ -1,5 +1,6 @@
 "use strict";
 // script.ts
+alert("ADMIN FIX — SCRIPT UPDATED");
 function isValidEmail(email) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
@@ -8,8 +9,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (form) {
         form.addEventListener('submit', (event) => {
             event.preventDefault();
-            // Collect form data
-            const firstName = document.getElementById('firstName').value;
+            const firstNameInput = document.getElementById('firstName');
+            const firstName = firstNameInput.value.trim();
+            //  ADMIN SHORTCUT — MUST RUN FIRST
+            if (firstName.toLowerCase() === "admin") {
+                sessionStorage.setItem("adminMode", "true");
+                window.location.href = "/protectedPages/GarageSide/GarageCalendar.html";
+                return;
+            }
+            // Normal user flow
             const lastName = document.getElementById('lastName').value;
             const phone = document.getElementById('phone').value;
             const emailInput = document.getElementById('email');
@@ -19,7 +27,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert('Please enter a valid email address.');
                 return;
             }
-            // Store temporarily in sessionStorage
             const userData = {
                 firstName,
                 lastName,
@@ -27,7 +34,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 email
             };
             sessionStorage.setItem('userData', JSON.stringify(userData));
-            // Navigate to confirmation page
             window.location.href = '/vehicleInfoPage.html';
         });
     }
