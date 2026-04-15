@@ -48,6 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const vehicleInfoForm = document.getElementById('vehicleInfoForm') as HTMLFormElement;
     if (vehicleInfoForm) {
+        //Pop-up alert for electric and hybrid vehicles
         const typeSelect = document.getElementById("type") as HTMLSelectElement;
         if (typeSelect) {
             typeSelect.addEventListener("change", function() {
@@ -55,6 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (selectedValue === "Electric Vehicle" || selectedValue === "Hybrid") {
             alert("Please call for service on this vehicle type.");
+            typeSelect.value = ""; // Reset selection
         }
         });
         }
