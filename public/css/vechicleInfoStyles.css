@@ -78,6 +78,13 @@ otherLabel {
     margin-bottom: 5px;
 }
 
+select {
+    width: 100%;
+    padding: 10px;
+    font-size: 18px;
+    border: 2px solid black;
+    box-sizing: border-box;
+}
 .optional {
     content: " (Optional)";
     font-weight: normal;

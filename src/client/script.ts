@@ -48,6 +48,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const vehicleInfoForm = document.getElementById('vehicleInfoForm') as HTMLFormElement;
     if (vehicleInfoForm) {
+        const typeSelect = document.getElementById("type") as HTMLSelectElement;
+        if (typeSelect) {
+            typeSelect.addEventListener("change", function() {
+            const selectedValue = this.value;
+
+        if (selectedValue === "Electric Vehicle" || selectedValue === "Hybrid") {
+            alert("Please call for service on this vehicle type.");
+        }
+        });
+        }
         vehicleInfoForm.addEventListener('submit', (event) => {
             event.preventDefault();
 
