@@ -45,6 +45,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 day.classList.add('today');
             }
             day.textContent = String(i);
+            const count = (data[i] || []).length;
+            if (count > 0) {
+                const badge = document.createElement('span');
+                badge.className = 'appt-count';
+                badge.textContent = count + ' Appt' + (count > 1 ? 's' : '');
+                day.appendChild(badge);
+            }
             day.onclick = () => selectDay(i, day);
             calendarEl.appendChild(day);
         }
@@ -57,7 +64,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderAppointments(dayNum) {
         appointmentsEl.innerHTML = '';
         detailsEl.style.display = 'none';
-        const appts = data[dayNum] || [];
+        const appts = (data[dayNum] || []).sort((a, b) => {
+            return new Date('1/1/2000 ' + a.time).getTime() - new Date('1/1/2000 ' + b.time).getTime();
+        });
         appts.forEach((appt, index) => {
             const div = document.createElement('div');
             div.className = 'appointment ' + (appt.finished ? 'finished' : 'unfinished');
@@ -78,10 +87,16 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
         const finishBtn = detailsEl.querySelector('.btn-finish');
         finishBtn.onclick = () => {
+            if (!confirm('Mark this appointment as finished?'))
+                return;
             data[dayNum][index].finished = !data[dayNum][index].finished;
             renderAppointments(dayNum);
             showDetails(data[dayNum][index], dayNum, index);
         };
     }
     renderCalendar();
+    const todayEl = document.querySelector('.day.today');
+    if (todayEl) {
+        todayEl.click();
+    }
 });

@@ -69,6 +69,14 @@ document.addEventListener('DOMContentLoaded', (): void => {
       }
       day.textContent = String(i);
 
+      const count: number = (data[i] || []).length;
+      if (count > 0) {
+        const badge: HTMLSpanElement = document.createElement('span');
+        badge.className = 'appt-count';
+        badge.textContent = count + ' Appt' + (count > 1 ? 's' : '');
+        day.appendChild(badge);
+      }
+
       day.onclick = (): void => selectDay(i, day);
 
       calendarEl.appendChild(day);
@@ -85,7 +93,9 @@ document.addEventListener('DOMContentLoaded', (): void => {
     appointmentsEl.innerHTML = '';
     detailsEl.style.display = 'none';
 
-    const appts: Appointment[] = data[dayNum] || [];
+    const appts: Appointment[] = (data[dayNum] || []).sort((a, b) => {
+      return new Date('1/1/2000 ' + a.time).getTime() - new Date('1/1/2000 ' + b.time).getTime();
+    });
 
     appts.forEach((appt: Appointment, index: number) => {
       const div: HTMLDivElement = document.createElement('div');
@@ -119,4 +129,9 @@ document.addEventListener('DOMContentLoaded', (): void => {
   }
 
   renderCalendar();
+
+  const todayEl = document.querySelector('.day.today') as HTMLDivElement | null;
+  if (todayEl) {
+    todayEl.click();
+  }
 });
