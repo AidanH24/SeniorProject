@@ -88,9 +88,14 @@ function enqueueWrite<T>(fn: () => Promise<T>): Promise<T> {
   });
 }
 export function getSheetNameForAppointment(appointmentISO: string) {
-  const today = new Date();
-  const appt = new Date(appointmentISO);
-
+  function toLocalDate(dateISO: string): Date {
+    const d = new Date(dateISO);
+    return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  }
+  
+  const today = toLocalDate(new Date().toISOString());
+  const appt = toLocalDate(appointmentISO);
+  
   const monthDiff =
     (appt.getFullYear() - today.getFullYear()) * 12 +
     (appt.getMonth() - today.getMonth());
