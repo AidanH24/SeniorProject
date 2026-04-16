@@ -31,6 +31,54 @@ async function processQueue() {
   }
 }
 
+function needsMonthFlip(workbook: XLSX.WorkBook): boolean {
+  const today = new Date();
+  const currentMonth = today.getMonth();
+  const currentYear = today.getFullYear();
+
+  // Read the stored month from a hidden metadata sheet
+  const metaSheet = workbook.Sheets["Meta"];
+  if (!metaSheet) return true; // first run
+
+  const stored = metaSheet["A1"]?.v;
+  if (!stored) return true;
+
+  const [storedYear, storedMonth] = stored.split("-").map(Number);
+
+  return storedYear !== currentYear || storedMonth !== currentMonth;
+}
+
+function performMonthFlip(workbook: XLSX.WorkBook) {
+  console.log("🔄 Performing monthly Excel rollover...");
+
+  const last = workbook.Sheets["LastMonth"];
+  const thisM = workbook.Sheets["ThisMonth"];
+  const next = workbook.Sheets["NextMonth"];
+  const plus2 = workbook.Sheets["Month+2"];
+  const plus3 = workbook.Sheets["Month+3"];
+
+  // Shift sheets forward
+  workbook.Sheets["LastMonth"] = thisM;
+  workbook.Sheets["ThisMonth"] = next;
+  workbook.Sheets["NextMonth"] = plus2;
+  workbook.Sheets["Month+2"] = plus3;
+
+  // Create new empty Month+2
+  const empty = XLSX.utils.json_to_sheet([]);
+  workbook.Sheets["Month+3"] = empty;
+
+  // Update metadata
+  const today = new Date();
+  const meta = XLSX.utils.aoa_to_sheet([
+      [`${today.getFullYear()}-${today.getMonth()}`]
+  ]);
+  workbook.Sheets["Meta"] = meta;
+
+  console.log("✔ Monthly rollover complete");
+}
+
+
+
 function enqueueWrite<T>(fn: () => Promise<T>): Promise<T> {
   return new Promise((resolve, reject) => {
     writeQueue.push({ fn, resolve, reject });
@@ -71,6 +119,11 @@ export async function appendAppointment(rowData: Record<string, any>): Promise<v
     console.log("📝 Writing to Excel:", rowData, "file:", excelPath);
 
     const workbook = XLSX.readFile(excelPath);
+    if (needsMonthFlip(workbook)) {
+      performMonthFlip(workbook);
+      XLSX.writeFile(workbook, excelPath);
+  }
+  
 
     // ⭐ USE THE CORRECT SHEET
     const sheetName = getSheetNameForAppointment(rowData.AppointmentISO);
