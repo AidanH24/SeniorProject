@@ -38,43 +38,57 @@ function needsMonthFlip(workbook: XLSX.WorkBook): boolean {
   const currentMonth = today.getMonth();
   const currentYear = today.getFullYear();
 
-  // Read the stored month from a hidden metadata sheet
   const metaSheet = workbook.Sheets["Meta"];
-  if (!metaSheet) return true; // first run
+  if (!metaSheet) {
+    console.log("Meta sheet missing → first rollover needed");
+    return true;
+  }
 
-  const stored = metaSheet["A1"]?.v;
-  if (!stored) return true;
+  const cell = metaSheet["A1"];
+  if (!cell || cell.v == null) {
+    console.log("Meta A1 empty → rollover needed");
+    return true;
+  }
 
-  const [storedYear, storedMonth] = stored.split("-").map(Number);
+  const storedStr = String(cell.v);
+  const [storedYear, storedMonth] = storedStr.split("-").map(Number);
 
-  return storedYear !== currentYear || storedMonth !== currentMonth;
+  const needs =
+    storedYear !== currentYear ||
+    storedMonth !== currentMonth;
+
+  console.log("Meta check:", { storedStr, storedYear, storedMonth, currentYear, currentMonth, needs });
+
+  return needs;
 }
+
 
 function performMonthFlip(workbook: XLSX.WorkBook) {
   console.log("🔄 Performing monthly Excel rollover...");
 
-  const last = workbook.Sheets["LastMonth"];
-  const thisM = workbook.Sheets["ThisMonth"];
-  const next = workbook.Sheets["NextMonth"];
-  const plus2 = workbook.Sheets["Month+2"];
-  const plus3 = workbook.Sheets["Month+3"];
+  const ensure = (name: string) => {
+    if (!workbook.Sheets[name]) {
+      workbook.Sheets[name] = XLSX.utils.json_to_sheet([]);
+    }
+    return workbook.Sheets[name];
+  };
 
-  // Shift sheets forward
+  const last = ensure("LastMonth");
+  const thisM = ensure("ThisMonth");
+  const next = ensure("NextMonth");
+  const plus2 = ensure("Month+2");
+  const plus3 = ensure("Month+3");
+
   workbook.Sheets["LastMonth"] = thisM;
   workbook.Sheets["ThisMonth"] = next;
   workbook.Sheets["NextMonth"] = plus2;
   workbook.Sheets["Month+2"] = plus3;
+  workbook.Sheets["Month+3"] = XLSX.utils.json_to_sheet([]);
 
-  // Create new empty Month+2
-  const empty = XLSX.utils.json_to_sheet([]);
-  workbook.Sheets["Month+3"] = empty;
-
-  // Update metadata
   const today = new Date();
-  const meta = XLSX.utils.aoa_to_sheet([
-      [`${today.getFullYear()}-${today.getMonth()}`]
+  workbook.Sheets["Meta"] = XLSX.utils.aoa_to_sheet([
+    [`${today.getFullYear()}-${today.getMonth()}`]
   ]);
-  workbook.Sheets["Meta"] = meta;
 
   console.log("✔ Monthly rollover complete");
 }
@@ -87,29 +101,33 @@ function enqueueWrite<T>(fn: () => Promise<T>): Promise<T> {
     processQueue();
   });
 }
-export function getSheetNameForAppointment(appointmentISO: string) {
-  function toLocalDate(dateISO: string): Date {
-    const d = new Date(dateISO);
-    return new Date(d.getFullYear(), d.getMonth(), d.getDate());
-  }
-  
-  const today = toLocalDate(new Date().toISOString());
-  const appt = toLocalDate(appointmentISO);
-  
+function toLocalDateOnly(dateISO: string): Date {
+  const d = new Date(dateISO);
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+}
+
+export function getSheetNameForAppointment(appointmentISO: string): string {
+  const appt = toLocalDateOnly(appointmentISO);
+
+  // Use the appointment's month window, NOT today's date
+  const base = new Date(); 
+  const today = new Date(base.getFullYear(), base.getMonth(), 1);
+
   const monthDiff =
     (appt.getFullYear() - today.getFullYear()) * 12 +
     (appt.getMonth() - today.getMonth());
 
-  switch (monthDiff) {
-    case -1: return "LastMonth";
-    case 0: return "ThisMonth";
-    case 1: return "NextMonth";
-    case 2: return "Month+2";
-    case 3: return "Month+3";
-    default:
-      throw new Error(`Appointment month out of range: ${monthDiff}`);
-  }
+  if (monthDiff <= -1) return "LastMonth";
+  if (monthDiff === 0) return "ThisMonth";
+  if (monthDiff === 1) return "NextMonth";
+  if (monthDiff === 2) return "Month+2";
+  if (monthDiff === 3) return "Month+3";
+
+  console.warn("Out-of-range appointment:", { appointmentISO, monthDiff });
+  return "ThisMonth";
 }
+
+
 
 export async function appendAppointment(rowData: Record<string, any>): Promise<void> {
   if (!rowData || Object.keys(rowData).length === 0) {
@@ -124,12 +142,12 @@ export async function appendAppointment(rowData: Record<string, any>): Promise<v
   await enqueueWrite(async () => {
     console.log("📝 Writing to Excel:", rowData, "file:", excelPath);
 
-    const workbook = XLSX.readFile(excelPath);
-    if (needsMonthFlip(workbook)) {
+      const workbook = XLSX.readFile(excelPath);
+  if (needsMonthFlip(workbook)) {
       performMonthFlip(workbook);
       XLSX.writeFile(workbook, excelPath);
   }
-  
+    
 
     // ⭐ USE THE CORRECT SHEET
     const sheetName = getSheetNameForAppointment(rowData.AppointmentISO);
