@@ -3,8 +3,10 @@ import * as XLSX from "xlsx";
 import path from "path";
 import { existsSync } from "fs";
 
+
 const DEFAULT_EXCEL = path.join(process.cwd(), "Data", "AutoData.xlsx");
-const EXCEL_PATH = process.env.EXCEL_PATH || DEFAULT_EXCEL;
+export const EXCEL_PATH = process.env.EXCEL_PATH || DEFAULT_EXCEL;
+
 
 type QueueItem<T> = {
   fn: () => Promise<T>;
@@ -85,6 +87,24 @@ function enqueueWrite<T>(fn: () => Promise<T>): Promise<T> {
     processQueue();
   });
 }
+export function getSheetNameForAppointment(appointmentISO: string) {
+  const today = new Date();
+  const appt = new Date(appointmentISO);
+
+  const monthDiff =
+    (appt.getFullYear() - today.getFullYear()) * 12 +
+    (appt.getMonth() - today.getMonth());
+
+  switch (monthDiff) {
+    case -1: return "LastMonth";
+    case 0: return "ThisMonth";
+    case 1: return "NextMonth";
+    case 2: return "Month+2";
+    case 3: return "Month+3";
+    default:
+      throw new Error(`Appointment month out of range: ${monthDiff}`);
+  }
+}
 
 export async function appendAppointment(rowData: Record<string, any>): Promise<void> {
   if (!rowData || Object.keys(rowData).length === 0) {
@@ -94,25 +114,6 @@ export async function appendAppointment(rowData: Record<string, any>): Promise<v
   const excelPath = EXCEL_PATH;
   if (!existsSync(excelPath)) {
     throw new Error(`Excel file not found at ${excelPath}`);
-  }
-
-  function getSheetNameForAppointment(appointmentISO: string) {
-    const today = new Date();
-    const appt = new Date(appointmentISO);
-
-    const monthDiff =
-      (appt.getFullYear() - today.getFullYear()) * 12 +
-      (appt.getMonth() - today.getMonth());
-
-    switch (monthDiff) {
-      case -1: return "LastMonth";
-      case 0: return "ThisMonth";
-      case 1: return "NextMonth";
-      case 2: return "Month+2";
-      case 3: return "Month+3";
-      default:
-        throw new Error(`Appointment month out of range: ${monthDiff}`);
-    }
   }
 
   await enqueueWrite(async () => {
