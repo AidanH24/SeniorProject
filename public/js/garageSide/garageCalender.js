@@ -1,5 +1,16 @@
 "use strict";
 let appointmentData = {};
+
+async function loadAppointments() {
+        try {
+            const res = await fetch("/api/appointments");
+            appointmentData = await res.json();
+            console.log("Loaded appointments:", appointmentData);
+        } catch (err) {
+            console.error("Failed to load appointments", err);
+        }
+    }
+    
 document.addEventListener('DOMContentLoaded', async() => {
     const calendarEl = document.getElementById('calendar');
     const monthTitle = document.getElementById('monthTitle');
@@ -25,15 +36,7 @@ document.addEventListener('DOMContentLoaded', async() => {
     }
     const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-    async function loadAppointments() {
-        try {
-            const res = await fetch("/api/appointments");
-            appointmentData = await res.json();
-            console.log("Loaded appointments:", appointmentData);
-        } catch (err) {
-            console.error("Failed to load appointments", err);
-        }
-    }
+    
     
     function renderCalendar() {
         calendarEl.innerHTML = '';
