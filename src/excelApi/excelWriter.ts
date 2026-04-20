@@ -65,35 +65,33 @@ async function uploadExcelToGitHub(workbook: XLSX.WorkBook, sha: string) {
   );
 }
 
+function ensureMeta(workbook: XLSX.WorkBook) {
+  if (!workbook.Sheets["Meta"]) {
+    const today = new Date();
+    workbook.Sheets["Meta"] = XLSX.utils.aoa_to_sheet([
+      [`${today.getFullYear()}-${today.getMonth()}`]
+    ]);
+  }
+}
+
 
 function needsMonthFlip(workbook: XLSX.WorkBook): boolean {
-  const today = new Date();
-  const currentMonth = today.getMonth();
-  const currentYear = today.getFullYear();
-
   const metaSheet = workbook.Sheets["Meta"];
-  if (!metaSheet) {
-    console.log("Meta sheet missing → first rollover needed");
-    return true;
-  }
+  if (!metaSheet) return false; // ❗ never rollover on missing Meta
 
   const cell = metaSheet["A1"];
-  if (!cell || cell.v == null) {
-    console.log("Meta A1 empty → rollover needed");
-    return true;
-  }
+  if (!cell || cell.v == null) return false; // ❗ never rollover on empty Meta
 
   const storedStr = String(cell.v);
   const [storedYear, storedMonth] = storedStr.split("-").map(Number);
 
-  const needs =
-    storedYear !== currentYear ||
-    storedMonth !== currentMonth;
+  const today = new Date();
+  const currentMonth = today.getMonth();
+  const currentYear = today.getFullYear();
 
-  console.log("Meta check:", { storedStr, storedYear, storedMonth, currentYear, currentMonth, needs });
-
-  return needs;
+  return storedYear !== currentYear || storedMonth !== currentMonth;
 }
+
 
 
 function performMonthFlip(workbook: XLSX.WorkBook) {
@@ -173,6 +171,9 @@ export async function appendAppointment(rowData: Record<string, any>): Promise<v
     // 1. Pull latest Excel from GitHub
     const { workbook, sha } = await downloadExcelFromGitHub();
 
+    // 1.5 Ensure Meta exists (but do NOT rollover)
+    ensureMeta(workbook);
+
     // 2. Rollover (now safe because file persists)
     if (needsMonthFlip(workbook)) {
       performMonthFlip(workbook);
@@ -198,5 +199,6 @@ export async function appendAppointment(rowData: Record<string, any>): Promise<v
     console.log(`✔ Appointment saved to GitHub sheet: ${sheetName}`);
   });
 }
+
 
 
