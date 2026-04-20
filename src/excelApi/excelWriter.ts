@@ -2,6 +2,12 @@
 import * as XLSX from "xlsx";
 import path from "path";
 import { existsSync } from "fs";
+import { getFileContent, updateFileContent } from "./githubClient";
+
+
+const GH_OWNER = process.env.GITHUB_OWNER!;
+const GH_REPO = process.env.GITHUB_REPO!;
+const GH_BRANCH = process.env.GITHUB_BRANCH || "main";
 
 
 const DEFAULT_EXCEL = path.join(process.cwd(), "Data", "AutoData.xlsx");
@@ -32,6 +38,33 @@ async function processQueue() {
     setImmediate(processQueue);
   }
 }
+
+async function downloadExcelFromGitHub() {
+  const { buffer, sha } = await getFileContent(
+    GH_OWNER,
+    GH_REPO,
+    EXCEL_PATH,
+    GH_BRANCH
+  );
+
+  const workbook = XLSX.read(buffer, { type: "buffer" });
+  return { workbook, sha };
+}
+
+async function uploadExcelToGitHub(workbook: XLSX.WorkBook, sha: string) {
+  const buffer = XLSX.write(workbook, { type: "buffer", bookType: "xlsx" });
+
+  await updateFileContent(
+    GH_OWNER,
+    GH_REPO,
+    EXCEL_PATH,
+    buffer,
+    "Update Excel file",
+    sha,
+    GH_BRANCH
+  );
+}
+
 
 function needsMonthFlip(workbook: XLSX.WorkBook): boolean {
   const today = new Date();
@@ -134,52 +167,36 @@ export async function appendAppointment(rowData: Record<string, any>): Promise<v
     throw new Error("Appointment payload required");
   }
 
-  const excelPath = EXCEL_PATH;
-  if (!existsSync(excelPath)) {
-    throw new Error(`Excel file not found at ${excelPath}`);
-  }
-
   await enqueueWrite(async () => {
-    console.log("📝 Writing to Excel:", rowData, "file:", excelPath);
+    console.log("📝 Writing to Excel via GitHub:", rowData);
 
-      const workbook = XLSX.readFile(excelPath);
-  if (needsMonthFlip(workbook)) {
+    // 1. Pull latest Excel from GitHub
+    const { workbook, sha } = await downloadExcelFromGitHub();
+
+    // 2. Rollover (now safe because file persists)
+    if (needsMonthFlip(workbook)) {
       performMonthFlip(workbook);
-      XLSX.writeFile(workbook, excelPath);
-  }
-    
+    }
 
-    // ⭐ USE THE CORRECT SHEET
+    // 3. Determine correct sheet
     const sheetName = getSheetNameForAppointment(rowData.AppointmentISO);
     const sheet = workbook.Sheets[sheetName];
+    if (!sheet) throw new Error(`Sheet "${sheetName}" not found`);
 
-    if (!sheet) {
-      throw new Error(`Sheet "${sheetName}" not found in workbook`);
-    }
-
-    // Convert sheet → JSON
+    // 4. Convert sheet → JSON
     let rows: Record<string, any>[] = XLSX.utils.sheet_to_json(sheet, { defval: "" });
 
-    const columns = [
-      "FirstName","LastName","Phone","Email",
-      "CarMake","CarType","CarColor","CarYear",
-      "ServiceType","AppointmentDate","Time","AppointmentISO"
-    ];
+    // 5. Add new row
+    rows.push(rowData);
 
-    const newRow: Record<string, any> = {};
-    for (const col of columns) {
-      newRow[col] = rowData[col] ?? "";
-    }
+    // 6. Convert JSON → sheet
+    workbook.Sheets[sheetName] = XLSX.utils.json_to_sheet(rows);
 
-    rows.push(newRow);
+    // 7. Upload updated Excel back to GitHub
+    await uploadExcelToGitHub(workbook, sha);
 
-    // Convert JSON → sheet
-    const updatedSheet = XLSX.utils.json_to_sheet(rows, { header: columns });
-    workbook.Sheets[sheetName] = updatedSheet;
-
-    XLSX.writeFile(workbook, excelPath);
-
-    console.log(`✔ Appointment saved to Excel sheet: ${sheetName}`);
+    console.log(`✔ Appointment saved to GitHub sheet: ${sheetName}`);
   });
 }
+
 
