@@ -39,7 +39,7 @@ async function processQueue() {
   }
 }
 
-async function downloadExcelFromGitHub() {
+export async function downloadExcelFromGitHub() {
   const { buffer, sha } = await getFileContent(
     GH_OWNER,
     GH_REPO,
@@ -199,6 +199,7 @@ export async function appendAppointment(rowData: Record<string, any>): Promise<v
     console.log(`✔ Appointment saved to GitHub sheet: ${sheetName}`);
   });
 }
+
 
 
 
