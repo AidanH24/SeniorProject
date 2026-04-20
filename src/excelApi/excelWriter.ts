@@ -7,7 +7,7 @@ import { getFileContent, updateFileContent } from "./githubClient";
 
 const GH_OWNER = process.env.GITHUB_OWNER!;
 const GH_REPO = process.env.GITHUB_REPO!;
-const GH_BRANCH = process.env.GITHUB_BRANCH || "main";
+const GH_BRANCH = process.env.GITHUB_BRANCH || "serverHostTesting";//Important change to proper branch
 
 
 const DEFAULT_EXCEL = path.join(process.cwd(), "Data", "AutoData.xlsx");
