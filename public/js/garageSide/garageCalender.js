@@ -10,7 +10,7 @@ async function loadAppointments() {
             console.error("Failed to load appointments", err);
         }
     }
-    
+
 document.addEventListener('DOMContentLoaded', async() => {
     const calendarEl = document.getElementById('calendar');
     const monthTitle = document.getElementById('monthTitle');
@@ -99,5 +99,4 @@ document.addEventListener('DOMContentLoaded', async() => {
             showDetails(appointmentData[dayNum][index], dayNum, index);            
         };
     }
-    renderCalendar();
 });
