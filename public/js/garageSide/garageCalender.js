@@ -1,9 +1,12 @@
 "use strict";
-document.addEventListener('DOMContentLoaded', () => {
+let appointmentData = {};
+document.addEventListener('DOMContentLoaded', async() => {
     const calendarEl = document.getElementById('calendar');
     const monthTitle = document.getElementById('monthTitle');
     const appointmentsEl = document.getElementById('appointments');
     const detailsEl = document.getElementById('details');
+    await loadAppointments();
+    renderCalendar();
     const downloadBtn = document.getElementById("downloadExcelBtn");
     if (downloadBtn) {
         downloadBtn.addEventListener("click", () => {
@@ -17,17 +20,21 @@ document.addEventListener('DOMContentLoaded', () => {
         'January', 'February', 'March', 'April', 'May', 'June',
         'July', 'August', 'September', 'October', 'November', 'December'
     ];
-    const data = {
-        10: [
-            { time: '9:00 AM', customer: 'John Doe', phone: '555-123-4567', email: 'john@example.com', services: 'Oil Change', finished: false },
-            { time: '10:00 AM', customer: 'Jane Smith', phone: '555-987-6543', email: 'jane@example.com', services: 'Tire Repair', finished: false },
-            { time: '11:00 AM', customer: 'Robert Johnson', phone: '555-222-3333', email: 'robert@example.com', services: 'Inspection', finished: false }
-        ]
-    };
     function getDaysInMonth(month, year) {
         return new Date(year, month + 1, 0).getDate();
     }
     const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+    async function loadAppointments() {
+        try {
+            const res = await fetch("/api/appointments");
+            appointmentData = await res.json();
+            console.log("Loaded appointments:", appointmentData);
+        } catch (err) {
+            console.error("Failed to load appointments", err);
+        }
+    }
+    
     function renderCalendar() {
         calendarEl.innerHTML = '';
         monthTitle.textContent = months[currentMonthIndex] + ' ' + currentYear;
@@ -63,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderAppointments(dayNum) {
         appointmentsEl.innerHTML = '';
         detailsEl.style.display = 'none';
-        const appts = data[dayNum] || [];
+        const appts = appointmentData[dayNum] || [];
         appts.forEach((appt, index) => {
             const div = document.createElement('div');
             div.className = 'appointment ' + (appt.finished ? 'finished' : 'unfinished');
@@ -84,9 +91,9 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
         const finishBtn = detailsEl.querySelector('.btn-finish');
         finishBtn.onclick = () => {
-            data[dayNum][index].finished = !data[dayNum][index].finished;
+            appointmentData[dayNum][index].finished = !appointmentData[dayNum][index].finished;
             renderAppointments(dayNum);
-            showDetails(data[dayNum][index], dayNum, index);
+            showDetails(appointmentData[dayNum][index], dayNum, index);            
         };
     }
     renderCalendar();
