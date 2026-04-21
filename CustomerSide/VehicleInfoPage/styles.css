@@ -52,6 +52,9 @@ body {
 /* Each field */
 .field {
     margin-bottom: 20px;
+    width: 300px; /* Increases the overall width */
+    padding: 10px; /* Makes the box taller and adds inner space */
+    font-size: 1.2rem; /* Scales up the text and the box with it */
 }
 
 /* Labels */
@@ -110,3 +113,10 @@ button {
     button:hover {
         background-color: #6ea4cc;
     }
+
+/*dropdown*/
+select {
+    width: 300px; /* Increases the overall width */
+    padding: 10px; /* Makes the box taller and adds inner space */
+    font-size: 1.2rem; /* Scales up the text and the box with it */
+}
