@@ -13,9 +13,9 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
     const data = {
         10: [
-            { time: '9:00 AM', customer: 'John Doe', phone: '555-123-4567', email: 'john@example.com', services: 'Oil Change', finished: false },
-            { time: '10:00 AM', customer: 'Jane Smith', phone: '555-987-6543', email: 'jane@example.com', services: 'Tire Repair', finished: false },
-            { time: '11:00 AM', customer: 'Robert Johnson', phone: '555-222-3333', email: 'robert@example.com', services: 'Inspection', finished: false }
+            { time: '9:00 AM', customer: 'John Doe', phone: '555-123-4567', email: 'john@example.com', services: 'Oil Change', vehicle: '2020 Honda Civic', finished: false },
+            { time: '10:00 AM', customer: 'Jane Smith', phone: '555-987-6543', email: 'jane@example.com', services: 'Tire Repair', vehicle: '2018 Toyota Camry', finished: false },
+            { time: '11:00 AM', customer: 'Robert Johnson', phone: '555-222-3333', email: 'robert@example.com', services: 'Inspection', vehicle: '2022 Ford F-150', finished: false }
         ]
     };
     function getDaysInMonth(month, year) {
@@ -67,6 +67,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const appts = (data[dayNum] || []).sort((a, b) => {
             return new Date('1/1/2000 ' + a.time).getTime() - new Date('1/1/2000 ' + b.time).getTime();
         });
+        const total = appts.length;
+        const finishedCount = appts.filter(a => a.finished).length;
+        const unfinishedCount = total - finishedCount;
+        const summary = document.createElement('div');
+        summary.className = 'summary';
+        summary.textContent = `${total} total — ${unfinishedCount} unfinished, ${finishedCount} finished`;
+        appointmentsEl.appendChild(summary);
         appts.forEach((appt, index) => {
             const div = document.createElement('div');
             div.className = 'appointment ' + (appt.finished ? 'finished' : 'unfinished');
@@ -81,13 +88,17 @@ document.addEventListener('DOMContentLoaded', () => {
       <p><strong>Customer:</strong> ${appt.customer}</p>
       <p><strong>Phone:</strong> ${appt.phone}</p>
       <p><strong>Email:</strong> ${appt.email}</p>
+      <p><strong>Vehicle:</strong> ${appt.vehicle}</p>
       <p><strong>Services:</strong> ${appt.services}</p>
-      <button class="btn-finish">Finished</button>
+      <button class="btn-finish">${appt.finished ? 'Unfinished' : 'Finished'}</button>
       <button class="btn-reschedule">Reschedule</button>
     `;
         const finishBtn = detailsEl.querySelector('.btn-finish');
         finishBtn.onclick = () => {
-            if (!confirm('Mark this appointment as finished?'))
+            const message = appt.finished
+                ? 'Mark this appointment as unfinished?'
+                : 'Mark this appointment as finished?';
+            if (!confirm(message))
                 return;
             data[dayNum][index].finished = !data[dayNum][index].finished;
             renderAppointments(dayNum);

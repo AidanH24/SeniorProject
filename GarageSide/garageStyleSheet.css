@@ -39,6 +39,21 @@ body {
     gap: 10px;
 }
 
+.day-header {
+    padding: 10px;
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    background: #f5f5f5;
+    border-radius: 5px;
+}
+
+.appt-count {
+    display: block;
+    font-size: 12px;
+    color: #555;
+}
+
 .day {
     padding: 25px;
     border: 1px solid #ccc;
@@ -48,10 +63,21 @@ body {
     border-radius: 5px;
 }
 
+    .day.today {
+        border: 3px solid #333;
+    }
+
     .day.selected {
         background-color: #6fa8dc;
         color: white;
     }
+
+.summary {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #333;
+}
 
 .appointment {
     padding: 10px;
