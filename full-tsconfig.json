@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "skipLibCheck": true,
+        "lib": [
+            "es2021"
+        ]
+    },
+    "references": [
+        {
+            "path": "./tsconfig.client.json"
+        },
+        {
+            "path": "./tsconfig.server.json"
+        },
+        {
+            "path": "./tsconfig.excelApi.json"
+        }
+    ]
+}

@@ -50,6 +50,31 @@ function populateMonths() {
     monthSelect.selectedIndex = new Date().getMonth();
     updateDaysForMonth();
 }
+async function loadAvailableTimes(selectedDate) {
+    const res = await fetch(`/api/appointments/taken-times?date=${selectedDate}`);
+    const data = await res.json();
+    const taken = data.takenTimes;
+    const allTimes = [
+        "8:00 AM", "8:15 AM", "8:30 AM", "8:45 AM",
+        "9:00 AM", "9:15 AM", "9:30 AM", "9:45 AM",
+        "10:00 AM", "10:15 AM", "10:30 AM", "10:45 AM",
+        "11:00 AM", "11:15 AM", "11:30 AM", "11:45 AM",
+        "12:00 PM", "12:15 PM", "12:30 PM", "12:45 PM",
+        "1:00 PM", "1:15 PM", "1:30 PM", "1:45 PM",
+        "2:00 PM", "2:15 PM", "2:30 PM", "2:45 PM",
+        "3:00 PM", "3:15 PM", "3:30 PM", "3:45 PM",
+        "4:00 PM"
+    ];
+    const available = allTimes.filter(t => !taken.includes(t));
+    const select = document.getElementById("timeSelect");
+    select.innerHTML = "";
+    available.forEach(time => {
+        const opt = document.createElement("option");
+        opt.value = time;
+        opt.textContent = time;
+        select.appendChild(opt);
+    });
+}
 function saveDateTimeToSessionStorage() {
     const selectedMonth = months[monthSelect.selectedIndex];
     const selectedDay = daySelect.value;
@@ -67,6 +92,20 @@ function saveDateTimeToSessionStorage() {
     };
     sessionStorage.setItem('appointmentData', JSON.stringify(appointmentData));
 }
+function initSelectWhenPage() {
+    populateMonths();
+    createTimeOptions();
+    monthSelect.addEventListener('change', () => {
+        updateDaysForMonth();
+    });
+    daySelect.addEventListener('change', () => {
+        const month = monthSelect.selectedIndex + 1;
+        const day = daySelect.value.padStart(2, "0");
+        const year = new Date().getFullYear();
+        const dateStr = `${year}-${String(month).padStart(2, "0")}-${day}`;
+        loadAvailableTimes(dateStr);
+    });
+}
 const confirmBtn = document.getElementById('confirmBtn');
 confirmBtn.addEventListener('click', (e) => {
     e.preventDefault();
@@ -80,9 +119,4 @@ backBtn.addEventListener('click', (e) => {
     // Navigate back to services page (update the path as needed)
     window.location.href = '/servicesPage.html';
 });
-function initSelectWhenPage() {
-    populateMonths();
-    createTimeOptions();
-    monthSelect.addEventListener('change', updateDaysForMonth);
-}
 initSelectWhenPage();
