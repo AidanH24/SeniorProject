@@ -71,7 +71,7 @@ const confirmRescheduleBtn = document.getElementById('confirmBtn');
 confirmRescheduleBtn.addEventListener('click', (e) => {
     e.preventDefault();
     saveRescheduleDateTimeToSessionStorage();
-    // Navigate to confirmation page (update the path as needed)
+    // This needs to navigate back to the garage calendar page. and also save the new appointment data to database. 
     window.location.href = '../ConfirmationPage/confirmationPage.html';
 });
 function initReschedulePage() {

@@ -52,6 +52,9 @@ body {
 /* Each field */
 .field {
     margin-bottom: 20px;
+    width: 300px; /* Increases the overall width */
+    padding: 10px; /* Makes the box taller and adds inner space */
+    font-size: 1.2rem; /* Scales up the text and the box with it */
 }
 
 /* Labels */
@@ -78,13 +81,6 @@ otherLabel {
     margin-bottom: 5px;
 }
 
-select {
-    width: 100%;
-    padding: 10px;
-    font-size: 18px;
-    border: 2px solid black;
-    box-sizing: border-box;
-}
 .optional {
     content: " (Optional)";
     font-weight: normal;
@@ -117,3 +113,10 @@ button {
     button:hover {
         background-color: #6ea4cc;
     }
+
+/*dropdown*/
+select {
+    width: 300px; /* Increases the overall width */
+    padding: 10px; /* Makes the box taller and adds inner space */
+    font-size: 1.2rem; /* Scales up the text and the box with it */
+}
