@@ -18,6 +18,13 @@ document.addEventListener('DOMContentLoaded', (): void => {
   const appointmentsEl = document.getElementById('appointments') as HTMLDivElement;
   const detailsEl = document.getElementById('details') as HTMLDivElement;
 
+  const downloadBtn = document.getElementById("downloadExcelBtn");
+  if (downloadBtn) {
+    downloadBtn.addEventListener("click", () => {
+      window.location.href = "/api/download-excel";
+    });
+  }
+  
   const now = new Date();
   const currentMonthIndex: number = now.getMonth();
   const currentYear: number = now.getFullYear();
