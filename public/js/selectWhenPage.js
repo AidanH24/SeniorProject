@@ -3,6 +3,14 @@ const monthSelect = document.getElementById('monthSelect');
 const daySelect = document.getElementById('daySelect');
 const timeSelect = document.getElementById('timeSelect');
 const summary = document.getElementById('summary');
+let blackoutDates = [];
+
+async function loadBlackoutDays() {
+    const res = await fetch("/api/blackout-days");
+    const data = await res.json();
+    blackoutDates = data.blackoutDates || [];
+}
+
 const months = [
     'January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December'
@@ -31,14 +39,30 @@ function updateDaysForMonth() {
     const now = new Date();
     const year = now.getFullYear();
     const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
+
     daySelect.innerHTML = '';
+
     for (let d = 1; d <= daysInMonth; d++) {
+        const dateObj = new Date(year, monthIndex, d);
+        const dayOfWeek = dateObj.getDay(); // 0 = Sunday
+
+        // Format YYYY-MM-DD
+        const dateStr = `${year}-${String(monthIndex + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+
+        // ❌ Skip Sundays
+        if (dayOfWeek === 0) continue;
+
+        // ❌ Skip blackout dates from Excel
+        if (blackoutDates.includes(dateStr)) continue;
+
+        // Otherwise add the day
         const option = document.createElement('option');
         option.value = String(d);
         option.textContent = String(d);
         daySelect.appendChild(option);
     }
 }
+
 function populateMonths() {
     monthSelect.innerHTML = '';
     months.forEach((m, index) => {
@@ -119,4 +143,8 @@ backBtn.addEventListener('click', (e) => {
     // Navigate back to services page (update the path as needed)
     window.location.href = '/servicesPage.html';
 });
-initSelectWhenPage();
+(async () => {
+    await loadBlackoutDays();
+    initSelectWhenPage();
+})();
+

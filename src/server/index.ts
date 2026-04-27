@@ -139,6 +139,50 @@ app.get("/api/appointments/taken-times", async (req, res) => {
     res.status(500).json({ error: "Failed to load taken times" });
   }
 });
+//Route Get Blackout dates
+app.get("/api/blackout-days", async (req, res) => {
+  try {
+      const { workbook } = await downloadExcelFromGitHub();
+      const sheet = workbook.Sheets["BlackoutRules"];
+
+      if (!sheet) return res.json({ blackoutDates: [] });
+
+      // Define the expected row structure
+      interface BlackoutRow {
+          ID?: string | number;
+          StartDate?: string;
+          EndDate?: string;
+          StartTime?: string;
+          EndTime?: string;
+          Sundays?: string;
+      }
+
+      // Tell TypeScript what type the rows are
+      const rows = XLSX.utils.sheet_to_json<BlackoutRow>(sheet, { defval: "" });
+
+      const blackoutDates: string[] = [];
+
+      for (const row of rows) {
+          if (!row.StartDate) continue;
+
+          const start = new Date(row.StartDate);
+          const end = row.EndDate ? new Date(row.EndDate) : new Date(row.StartDate);
+
+          // Expand date range
+          for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+              blackoutDates.push(d.toISOString().split("T")[0]);
+          }
+      }
+
+      res.json({ blackoutDates });
+
+  } catch (err) {
+      console.error("Failed to load blackout days:", err);
+      res.status(500).json({ blackoutDates: [] });
+  }
+});
+
+
 
 // ------------------------------
 console.log('=== STARTUP DIAGNOSTIC ===');
