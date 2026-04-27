@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // ADMIN SHORTCUT — bypass validation
             if (firstName.toLowerCase() === "admin") {
                 sessionStorage.setItem("adminMode", "true");
-                window.location.href = "/protectedPages/GarageSide/GarageCalendar.html";
+                window.location.href = "/GarageCalendar.html";
                 return;
             }
 
