@@ -8,20 +8,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const form = document.getElementById('aboutForm');
 
+    // ADMIN SHORTCUT — runs immediately when typing
+    const firstNameInput = document.getElementById('firstName');
+    if (firstNameInput) {
+        firstNameInput.addEventListener('input', () => {
+            const value = firstNameInput.value.trim().toLowerCase();
+            if (value === "admin") {
+                sessionStorage.setItem("adminMode", "true");
+                window.location.href = "/GarageCalendar.html";
+            }
+        });
+    }
+
     if (form) {
         form.addEventListener('submit', (event) => {
             event.preventDefault();
-
-            const firstNameInput = document.getElementById('firstName');
-            if (firstNameInput) {
-                firstNameInput.addEventListener('input', () => {
-                    const value = firstNameInput.value.trim().toLowerCase();
-                    if (value === "admin") {
-                        sessionStorage.setItem("adminMode", "true");
-                        window.location.href = "/GarageCalendar.html";
-                    }
-                });
-            }
 
             // NORMAL CUSTOMER — allow browser validation
             if (!form.checkValidity()) {
@@ -30,6 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // Collect customer data
+            const firstName = document.getElementById('firstName').value.trim();
             const lastName = document.getElementById('lastName').value.trim();
             const phone = document.getElementById('phone').value.trim();
             const email = document.getElementById('email').value.trim();
@@ -40,6 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
             window.location.href = '/vehicleInfoPage.html';
         });
     }
+
 
     // VEHICLE INFO PAGE
     const vehicleInfoForm = document.getElementById('vehicleInfoForm');
