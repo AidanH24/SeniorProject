@@ -47,6 +47,7 @@ app.get("/api/appointments", async (req, res) => {
         phone: row.Phone,
         email: row.Email,
         services: row.ServiceType,
+        vehicle: `${row.CarYear} ${row.CarColor} ${row.CarMake} ${row.CarType}`,
         finished: false
       });
     }
