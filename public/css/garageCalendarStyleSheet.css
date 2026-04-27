@@ -23,6 +23,13 @@ body {
     border-left: 2px solid #ddd;
 }
 
+.disabled-day {
+    background-color: #ccc;
+    color: #777;
+    pointer-events: none;
+    opacity: 0.6;
+}
+
 .month-title {
     text-align: center;
     font-size: 40px;

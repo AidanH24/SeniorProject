@@ -81,6 +81,14 @@ document.addEventListener('DOMContentLoaded',  async() => {
             }
     
             day.textContent = String(i);
+            
+            // Disable Sundays (0 = Sunday)
+            const dayOfWeek = new Date(viewYear, viewMonth, i).getDay();
+            if (dayOfWeek === 0) {
+                day.classList.add('disabled-day');
+                day.onclick = null; // prevent clicking
+            }
+
     
             const count = (appointmentData[i] || []).length;
             if (count > 0) {
