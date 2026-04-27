@@ -104,6 +104,12 @@ body {
     font-size: 20px;
 }
 
+.selected-appointment {
+    background-color: #007bff;   /* bright blue highlight */
+    color: white;
+    border-left: 4px solid #0056b3;
+}
+
 button {
     padding: 16px 24px;
     margin-right: 12px;

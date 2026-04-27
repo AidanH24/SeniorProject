@@ -94,7 +94,11 @@ document.addEventListener('DOMContentLoaded',  async() => {
             const div = document.createElement('div');
             div.className = 'appointment ' + (appt.finished ? 'finished' : 'unfinished');
             div.textContent = `${appt.time} - ${appt.customer}`;
-            div.onclick = () => showDetails(appt, dayNum, index);
+            div.onclick = () => {
+                document.querySelectorAll('.appointment').forEach(a => a.classList.remove('selected-appointment'));
+                div.classList.add('selected-appointment');
+                showDetails(appt, dayNum, index);
+            };            
             appointmentsEl.appendChild(div);
         });
     }
