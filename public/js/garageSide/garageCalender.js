@@ -6,6 +6,8 @@ document.addEventListener('DOMContentLoaded',  async() => {
     const detailsEl = document.getElementById('details');
     const downloadBtn = document.getElementById("downloadExcelBtn");
     let appointmentData = {};
+    let blackoutDates = [];
+
 
     if (downloadBtn) {
         downloadBtn.addEventListener("click", () => {
@@ -41,6 +43,18 @@ document.addEventListener('DOMContentLoaded',  async() => {
         }
     }
 
+    async function loadBlackoutDays() {
+        try {
+            const res = await fetch("/api/blackout-days");
+            const data = await res.json();
+            blackoutDates = data.blackoutDates || [];
+        } catch (err) {
+            console.error("Failed to load blackout days", err);
+            blackoutDates = [];
+        }
+    }
+    
+
     
     function renderCalendar() {
         calendarEl.innerHTML = '';
@@ -70,8 +84,7 @@ document.addEventListener('DOMContentLoaded',  async() => {
         for (let i = 1; i <= days; i++) {
             const day = document.createElement('div');
             day.className = 'day';
-    
-            // Highlight today only if viewing the current month/year
+        
             if (
                 i === today &&
                 viewMonth === now.getMonth() &&
@@ -79,17 +92,23 @@ document.addEventListener('DOMContentLoaded',  async() => {
             ) {
                 day.classList.add('today');
             }
-    
+        
             day.textContent = String(i);
-            
-            // Disable Sundays (0 = Sunday)
+        
+            // Disable Sundays
             const dayOfWeek = new Date(viewYear, viewMonth, i).getDay();
             if (dayOfWeek === 0) {
                 day.classList.add('disabled-day');
-                day.onclick = null; // prevent clicking
+                day.onclick = null;
             }
-
-    
+        
+            // Disable blackout dates from Excel
+            const dateStr = `${viewYear}-${String(viewMonth + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+            if (blackoutDates.includes(dateStr)) {
+                day.classList.add('disabled-day');
+                day.onclick = null;
+            }
+        
             const count = (appointmentData[i] || []).length;
             if (count > 0) {
                 const badge = document.createElement('span');
@@ -97,13 +116,14 @@ document.addEventListener('DOMContentLoaded',  async() => {
                 badge.textContent = count + ' Appt' + (count > 1 ? 's' : '');
                 day.appendChild(badge);
             }
-    
+        
             day.onclick = () => selectDay(i, day);
             calendarEl.appendChild(day);
         }
     }
     
     // INITIAL LOAD
+    await loadBlackoutDays();
     await loadAppointmentsForViewMonth();
     renderCalendar();
     
