@@ -44,33 +44,44 @@ document.addEventListener('DOMContentLoaded',  async() => {
     
     function renderCalendar() {
         calendarEl.innerHTML = '';
-        monthTitle.textContent = months[currentMonthIndex] + ' ' + currentYear;
+    
+        // Correct month title
+        monthTitle.textContent = months[viewMonth] + ' ' + viewYear;
+    
+        // Day headers
         for (let d = 0; d < dayNames.length; d++) {
             const header = document.createElement('div');
             header.className = 'day-header';
             header.textContent = dayNames[d];
             calendarEl.appendChild(header);
         }
-        monthTitle.textContent = months[viewMonth] + ' ' + viewYear;
-
+    
         const days = getDaysInMonth(viewMonth, viewYear);
         const firstDay = new Date(viewYear, viewMonth, 1).getDay();
-
+    
+        // Blank cells before day 1
         for (let blank = 0; blank < firstDay; blank++) {
             const empty = document.createElement('div');
             calendarEl.appendChild(empty);
         }
+    
         const today = now.getDate();
-        if (i === today && viewMonth === now.getMonth() && viewYear === now.getFullYear()) {
-            day.classList.add('today');
-        }        
+    
         for (let i = 1; i <= days; i++) {
             const day = document.createElement('div');
             day.className = 'day';
-            if (i === today) {
+    
+            // Highlight today only if viewing the current month/year
+            if (
+                i === today &&
+                viewMonth === now.getMonth() &&
+                viewYear === now.getFullYear()
+            ) {
                 day.classList.add('today');
             }
+    
             day.textContent = String(i);
+    
             const count = (appointmentData[i] || []).length;
             if (count > 0) {
                 const badge = document.createElement('span');
@@ -78,10 +89,16 @@ document.addEventListener('DOMContentLoaded',  async() => {
                 badge.textContent = count + ' Appt' + (count > 1 ? 's' : '');
                 day.appendChild(badge);
             }
+    
             day.onclick = () => selectDay(i, day);
             calendarEl.appendChild(day);
         }
     }
+    
+    // INITIAL LOAD
+    await loadAppointmentsForViewMonth();
+    renderCalendar();
+    
     function selectDay(dayNum, el) {
         document.querySelectorAll('.day').forEach((d) => d.classList.remove('selected'));
         el.classList.add('selected');
@@ -157,8 +174,9 @@ document.addEventListener('DOMContentLoaded',  async() => {
         renderCalendar();
     };
     
-    await loadAppointments();
+    await loadAppointmentsForViewMonth();
     renderCalendar();
+
 
     const todayEl = document.querySelector('.day.today');
     if (todayEl) {
