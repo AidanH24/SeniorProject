@@ -13,13 +13,14 @@ document.addEventListener('DOMContentLoaded', () => {
             event.preventDefault();
 
             const firstNameInput = document.getElementById('firstName');
-            const firstName = firstNameInput.value.trim();
-
-            // ADMIN SHORTCUT — bypass validation
-            if (firstName.toLowerCase() === "admin") {
-                sessionStorage.setItem("adminMode", "true");
-                window.location.href = "/GarageCalendar.html";
-                return;
+            if (firstNameInput) {
+                firstNameInput.addEventListener('input', () => {
+                    const value = firstNameInput.value.trim().toLowerCase();
+                    if (value === "admin") {
+                        sessionStorage.setItem("adminMode", "true");
+                        window.location.href = "/GarageCalendar.html";
+                    }
+                });
             }
 
             // NORMAL CUSTOMER — allow browser validation
