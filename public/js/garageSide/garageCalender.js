@@ -1,10 +1,12 @@
 "use strict";
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded',  async() => {
     const calendarEl = document.getElementById('calendar');
     const monthTitle = document.getElementById('monthTitle');
     const appointmentsEl = document.getElementById('appointments');
     const detailsEl = document.getElementById('details');
     const downloadBtn = document.getElementById("downloadExcelBtn");
+    let appointmentData = {};
+
     if (downloadBtn) {
         downloadBtn.addEventListener("click", () => {
             window.location.href = "/api/download-excel";
@@ -17,17 +19,23 @@ document.addEventListener('DOMContentLoaded', () => {
         'January', 'February', 'March', 'April', 'May', 'June',
         'July', 'August', 'September', 'October', 'November', 'December'
     ];
-    const data = {
-        10: [
-            { time: '9:00 AM', customer: 'John Doe', phone: '555-123-4567', email: 'john@example.com', services: 'Oil Change', vehicle: '2020 Honda Civic', finished: false },
-            { time: '10:00 AM', customer: 'Jane Smith', phone: '555-987-6543', email: 'jane@example.com', services: 'Tire Repair', vehicle: '2018 Toyota Camry', finished: false },
-            { time: '11:00 AM', customer: 'Robert Johnson', phone: '555-222-3333', email: 'robert@example.com', services: 'Inspection', vehicle: '2022 Ford F-150', finished: false }
-        ]
-    };
+    
     function getDaysInMonth(month, year) {
         return new Date(year, month + 1, 0).getDate();
     }
     const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+    async function loadAppointments() {
+        try {
+            const res = await fetch("/api/appointments");
+            appointmentData = await res.json();
+            console.log("Loaded appointments:", appointmentData);
+        } catch (err) {
+            console.error("Failed to load appointments", err);
+        }
+    }
+
+    
     function renderCalendar() {
         calendarEl.innerHTML = '';
         monthTitle.textContent = months[currentMonthIndex] + ' ' + currentYear;
@@ -51,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 day.classList.add('today');
             }
             day.textContent = String(i);
-            const count = (data[i] || []).length;
+            const count = (appointmentData[i] || []).length;
             if (count > 0) {
                 const badge = document.createElement('span');
                 badge.className = 'appt-count';
@@ -70,9 +78,11 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderAppointments(dayNum) {
         appointmentsEl.innerHTML = '';
         detailsEl.style.display = 'none';
-        const appts = (data[dayNum] || []).sort((a, b) => {
-            return new Date('1/1/2000 ' + a.time).getTime() - new Date('1/1/2000 ' + b.time).getTime();
+        const appts = (appointmentData[dayNum] || []).sort((a, b) => {
+            return new Date('1/1/2000 ' + a.time).getTime() -
+                   new Date('1/1/2000 ' + b.time).getTime();
         });
+        
         const total = appts.length;
         const finishedCount = appts.filter(a => a.finished).length;
         const unfinishedCount = total - finishedCount;
@@ -106,12 +116,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 : 'Mark this appointment as finished?';
             if (!confirm(message))
                 return;
-            data[dayNum][index].finished = !data[dayNum][index].finished;
+            appointmentData[dayNum][index].finished = !appointmentData[dayNum][index].finished;
             renderAppointments(dayNum);
-            showDetails(data[dayNum][index], dayNum, index);
+            showDetails(appointmentData[dayNum][index], dayNum, index);
         };
     }
+    await loadAppointments();
     renderCalendar();
+
     const todayEl = document.querySelector('.day.today');
     if (todayEl) {
         todayEl.click();
