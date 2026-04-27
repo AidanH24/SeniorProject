@@ -51,13 +51,19 @@ document.addEventListener('DOMContentLoaded',  async() => {
             header.textContent = dayNames[d];
             calendarEl.appendChild(header);
         }
-        const days = getDaysInMonth(currentMonthIndex, currentYear);
-        const firstDay = new Date(currentYear, currentMonthIndex, 1).getDay();
+        monthTitle.textContent = months[viewMonth] + ' ' + viewYear;
+
+        const days = getDaysInMonth(viewMonth, viewYear);
+        const firstDay = new Date(viewYear, viewMonth, 1).getDay();
+
         for (let blank = 0; blank < firstDay; blank++) {
             const empty = document.createElement('div');
             calendarEl.appendChild(empty);
         }
         const today = now.getDate();
+        if (i === today && viewMonth === now.getMonth() && viewYear === now.getFullYear()) {
+            day.classList.add('today');
+        }        
         for (let i = 1; i <= days; i++) {
             const day = document.createElement('div');
             day.className = 'day';
