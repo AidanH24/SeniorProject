@@ -46,7 +46,7 @@ body {
 
     /* Section title inside box */
     .form-container::before {
-        content: "Select When";
+        content: "Appointment Time";
         display: block;
         font-size: 28px;
         font-weight: bold;
