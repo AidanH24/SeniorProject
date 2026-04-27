@@ -13,8 +13,14 @@ document.addEventListener('DOMContentLoaded',  async() => {
         });
     }
     const now = new Date();
-    const currentMonthIndex = now.getMonth();
-    const currentYear = now.getFullYear();
+    let viewMonth = now.getMonth();
+    let viewYear = now.getFullYear();
+
+    async function loadAppointmentsForViewMonth() {
+        const res = await fetch(`/api/appointments?month=${viewMonth}&year=${viewYear}`);
+        appointmentData = await res.json();
+    }
+
     const months = [
         'January', 'February', 'March', 'April', 'May', 'June',
         'July', 'August', 'September', 'October', 'November', 'December'
@@ -125,6 +131,26 @@ document.addEventListener('DOMContentLoaded',  async() => {
             showDetails(appointmentData[dayNum][index], dayNum, index);
         };
     }
+    document.getElementById("prevMonth").onclick = async () => {
+        viewMonth--;
+        if (viewMonth < 0) {
+            viewMonth = 11;
+            viewYear--;
+        }
+        await loadAppointmentsForViewMonth();
+        renderCalendar();
+    };
+    
+    document.getElementById("nextMonth").onclick = async () => {
+        viewMonth++;
+        if (viewMonth > 11) {
+            viewMonth = 0;
+            viewYear++;
+        }
+        await loadAppointmentsForViewMonth();
+        renderCalendar();
+    };
+    
     await loadAppointments();
     renderCalendar();
 

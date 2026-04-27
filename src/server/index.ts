@@ -26,7 +26,21 @@ app.get("/api/appointments", async (req, res) => {
   try {
     const { workbook } = await downloadExcelFromGitHub();
 
-    const sheet = workbook.Sheets["ThisMonth"];
+    // Read month/year from query
+    const month = Number(req.query.month); // 0–11
+    const year = Number(req.query.year);
+
+    // If no month/year provided, default to current month
+    const targetDate = new Date(
+      isNaN(year) ? new Date().getFullYear() : year,
+      isNaN(month) ? new Date().getMonth() : month,
+      1
+    );
+
+    // Convert to sheet name
+    const sheetName = getSheetNameForAppointment(targetDate.toISOString());
+    const sheet = workbook.Sheets[sheetName];
+
     if (!sheet) return res.json({});
 
     const rows: any[] = XLSX.utils.sheet_to_json(sheet, { defval: "" });
@@ -59,6 +73,7 @@ app.get("/api/appointments", async (req, res) => {
     res.status(500).json({ error: "Failed to load appointments" });
   }
 });
+
 
 
 // ------------------------------
