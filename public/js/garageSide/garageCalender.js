@@ -106,14 +106,14 @@ document.addEventListener('DOMContentLoaded',  async() => {
       <p><strong>Email:</strong> ${appt.email}</p>
       <p><strong>Vehicle:</strong> ${appt.vehicle}</p>
       <p><strong>Services:</strong> ${appt.services}</p>
-      <button class="btn-finish">${appt.finished ? 'Unfinished' : 'Finished'}</button>
+      <button class="btn-finish">${appt.finished ? 'Mark Incomplete' : 'Completed'}</button>
       <button class="btn-reschedule">Reschedule</button>
     `;
         const finishBtn = detailsEl.querySelector('.btn-finish');
         finishBtn.onclick = () => {
             const message = appt.finished
-                ? 'Mark this appointment as unfinished?'
-                : 'Mark this appointment as finished?';
+                ? 'Mark this appointment as Incomplete?'
+                : 'Mark this appointment as Completed?';
             if (!confirm(message))
                 return;
             appointmentData[dayNum][index].finished = !appointmentData[dayNum][index].finished;
