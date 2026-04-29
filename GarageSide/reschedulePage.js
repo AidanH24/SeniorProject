@@ -74,9 +74,17 @@ confirmRescheduleBtn.addEventListener('click', (e) => {
     // Navigate to confirmation page (update the path as needed)
     window.location.href = '../ConfirmationPage/confirmationPage.html';
 });
+function displayRescheduleInfo() {
+    const stored = sessionStorage.getItem('rescheduleAppt');
+    if (stored) {
+        const appt = JSON.parse(stored);
+        rescheduleSummary.innerHTML = `<strong>Rescheduling:</strong> ${appt.customer} - ${appt.services} (${appt.originalMonth} ${appt.originalDay}, ${appt.originalTime})`;
+    }
+}
 function initReschedulePage() {
     populateRescheduleMonths();
-    createRescheduleTimeOptions();
+    rescheduleTimeOptions();
+    displayRescheduleInfo();
     rescheduleMonthSelect.addEventListener('change', updateRescheduleDaysForMonth);
 }
 initReschedulePage();
